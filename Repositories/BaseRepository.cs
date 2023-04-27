@@ -1,6 +1,7 @@
 ﻿using Manero_Backend.Contexts;
 using Manero_Backend.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Manero_Backend.Repositories
 {
@@ -15,7 +16,8 @@ namespace Manero_Backend.Repositories
 		}
 		#endregion
 
-		#region Get
+		#region CRUD
+
 		public async Task<IEnumerable<TEntity>> GetAllAsync()
 		{
 			return await _context.Set<TEntity>().ToListAsync();
@@ -23,34 +25,35 @@ namespace Manero_Backend.Repositories
 		}
 		public async Task<TEntity> GetByIdAsync(int id)
 		{
-			return await _context.FindAsync<TEntity>(id);
+			var result = await _context.FindAsync<TEntity>(id);
+
+			return result!;
 
 		}
-		#endregion
-
-		#region CRUD
-
 		public async Task<TEntity> CreateAsync(TEntity entity)
 		{
-			_context.Add(entity);
+			_context.Set<TEntity>().Add(entity);
 			await _context.SaveChangesAsync();
-
 			return entity;
 		}
 
-		public async Task DeleteAsync(TEntity entity)
+		public async Task RemoveAsync(TEntity entity)
 		{
-			_context?.Remove(entity);
-			await _context.SaveChangesAsync();
+			_context?.Set<TEntity>().Remove(entity);
+			await _context!.SaveChangesAsync();
 		}
 
 		public async Task<TEntity> UpdateAsync(TEntity entity)
 		{
-			_context.Update(entity);
-			await _context.SaveChangesAsync();
+			_context.Set<TEntity>().Update(entity);
+			await _context!.SaveChangesAsync();
 			return entity;
 		}
 		#endregion
 
+		public async Task<IEnumerable<TEntity>>SearchAsync(Expression<Func<TEntity,bool>> predicate)
+		{
+			return await _context.Set<TEntity>().Where(predicate).ToListAsync();
+		}
 	}
 }
