@@ -15,6 +15,7 @@ builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<ProductService>();
 
 var app = builder.Build();
+
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 app.UseSwagger();
 app.UseSwaggerUI();
