@@ -1,5 +1,4 @@
-﻿using Manero_Backend.Helpers.Enums;
-using Manero_Backend.Models.Dtos;
+﻿using Manero_Backend.Models.Dtos;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,8 +18,8 @@ public class ProductEntity
 	public decimal Price { get; set; }
 	public int StarRating { get; set; }
 	public string? ImageUrl { get; set; }
-	public ProductTagEnum Tag { get; set; }
-	public ProductGenreEnum Genre { get; set; }
+	public TagEntity Tag { get; set; } = null!;
+	public CategoryEntity Category { get; set; } = null!;
 
 
 	public static implicit operator ProductResponse(ProductEntity entity)
@@ -35,12 +34,8 @@ public class ProductEntity
 			Price = entity.Price,
 			StarRating = entity.StarRating,
 			ImageUrl = entity.ImageUrl,
-			Tag = entity.Tag,
-			Genre = entity.Genre
-		};
+            Tag = new TagEntity { Name = entity.Tag.Name },
+            Category = new CategoryEntity { Name = entity.Category.Name }
+        };
 	}
-
-
-
-
 }

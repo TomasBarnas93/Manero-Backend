@@ -1,10 +1,8 @@
-﻿using Manero_Backend.Helpers.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using Manero_Backend.Models.Entities;
 
 namespace Manero_Backend.Models.Dtos
 {
-	public class ProductResponse
+    public class ProductResponse
 	{
 		public Guid Id { get; set; }
 		public string Name { get; set; } = null!;
@@ -14,7 +12,7 @@ namespace Manero_Backend.Models.Dtos
 		public decimal Price { get; set; }
 		public int StarRating { get; set; }
 		public string? ImageUrl { get; set; }
-		public ProductTagEnum Tag { get; set; }
-		public ProductGenreEnum Genre { get; set; }
+		public TagEntity Tag { get; set; } = null!;
+		public CategoryEntity Category { get; set; } = null!;
 	}
 }
