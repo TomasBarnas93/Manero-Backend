@@ -56,5 +56,21 @@ namespace Manero_Backend.Repositories
             return await _context.Set<TEntity>().Where(predicate).ToListAsync();
         }
 
+        public async Task<IEnumerable<TEntity>> GetAllByTag(string tag)
+        {
+            var result = await _context.FindAsync<IEnumerable<TEntity>>(tag);
+
+            return result!;
+
+        }
+        public async Task<IEnumerable<TEntity>> GetAllByGenre(string genre)
+        {
+            var result = await _context.FindAsync<IEnumerable<TEntity>>(genre);
+
+            return result!;
+
+        }
+
+
     }
 }

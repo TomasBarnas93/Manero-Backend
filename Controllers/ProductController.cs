@@ -22,7 +22,7 @@ namespace Manero_Backend.Controllers
             return Ok(products);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("Get/{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
             var product = await _productService.GetProductAsync(id);
@@ -44,7 +44,7 @@ namespace Manero_Backend.Controllers
             return Created("", await _productService.CreateAsync(productRequest));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(Guid id, ProductRequest productRequest)
         {
             if (!ModelState.IsValid)
@@ -60,7 +60,7 @@ namespace Manero_Backend.Controllers
             return Ok(updatedProduct);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _productService.DeleteAsync(id);
@@ -73,5 +73,40 @@ namespace Manero_Backend.Controllers
             var products = await _productService.SearchAsync(searchTerm);
             return Ok(products);
         }
+
+
+        [HttpGet("tag/{tag}")]
+        public async Task<IActionResult> GetAllByTag(string tag)
+        {
+            var product = await _productService.GetAllByTagAsync(tag);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(product);
+        }
+
+        [HttpGet("genre/{genre}")]
+        public async Task<IActionResult> GetAllByGenre(string genre)
+        {
+            var product = await _productService.GetAllByTagAsync(genre);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(product);
+        }
+
+
+
+
+
+
+
+
     }
 }
