@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Manero_Backend.Migrations
 {
     [DbContext(typeof(ManeroDbContext))]
-    [Migration("20230501101447_Fix 2")]
-    partial class Fix2
+    [Migration("20230501125217_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -113,7 +113,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ReviewEntity");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.TagEntity", b =>

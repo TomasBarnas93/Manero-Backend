@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Manero_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Fix2 : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,7 +70,7 @@ namespace Manero_Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReviewEntity",
+                name: "Reviews",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -82,9 +82,9 @@ namespace Manero_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReviewEntity", x => x.Id);
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReviewEntity_Products_ProductId",
+                        name: "FK_Reviews_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -102,8 +102,8 @@ namespace Manero_Backend.Migrations
                 column: "TagId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReviewEntity_ProductId",
-                table: "ReviewEntity",
+                name: "IX_Reviews_ProductId",
+                table: "Reviews",
                 column: "ProductId");
         }
 
@@ -111,7 +111,7 @@ namespace Manero_Backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ReviewEntity");
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "Products");
