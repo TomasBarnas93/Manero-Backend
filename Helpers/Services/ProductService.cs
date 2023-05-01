@@ -78,10 +78,9 @@ public class ProductService
         return result;
     }
 
-    public async Task<IEnumerable<ProductResponse>> GetAllByTagAsync(string tag)
+    public async Task<IEnumerable<ProductResponse>> GetAllByAsync(string byTerm)
     {
-        var resultlist = await _repository.GetAllByTag(tag);
-
+        var resultlist = await _repository.GetAllBy(byTerm);
 
         var result = new List<ProductResponse>();
         foreach (var product in resultlist)
@@ -91,31 +90,4 @@ public class ProductService
         return result;
 
     }
-
-    public async Task<IEnumerable<ProductResponse>> GetAllByGenreAsync(string tag)
-    {
-        var resultlist = await _repository.GetAllByGenre(tag);
-
-
-        var result = new List<ProductResponse>();
-        foreach (var product in resultlist)
-        {
-            result.Add(product);
-        }
-        return result;
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

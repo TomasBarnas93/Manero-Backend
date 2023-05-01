@@ -21,6 +21,8 @@ public class ProductEntity
 	public TagEntity Tag { get; set; } = null!;
 	public CategoryEntity Category { get; set; } = null!;
 
+	public List<ReviewEntity> Reviews { get; set; } = new List<ReviewEntity>();
+
 
 
 	public static implicit operator ProductResponse(ProductEntity entity)
@@ -39,4 +41,6 @@ public class ProductEntity
             Category = new CategoryEntity { Name = entity.Category.Name }
         };
 	}
+
+
 }
