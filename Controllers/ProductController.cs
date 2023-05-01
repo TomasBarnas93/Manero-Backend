@@ -75,10 +75,10 @@ namespace Manero_Backend.Controllers
         }
 
 
-        [HttpGet("tag/{tag}")]
-        public async Task<IActionResult> GetAllByTag(string tag)
+        [HttpGet("by/{byTerm}")]
+        public async Task<IActionResult> GetAllByTag(string byTerm)
         {
-            var product = await _productService.GetAllByTagAsync(tag);
+            var product = await _productService.GetAllByAsync(byTerm);
 
             if (product == null)
             {
@@ -87,26 +87,5 @@ namespace Manero_Backend.Controllers
 
             return Ok(product);
         }
-
-        [HttpGet("genre/{genre}")]
-        public async Task<IActionResult> GetAllByGenre(string genre)
-        {
-            var product = await _productService.GetAllByTagAsync(genre);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(product);
-        }
-
-
-
-
-
-
-
-
     }
 }
