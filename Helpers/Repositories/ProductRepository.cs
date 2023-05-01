@@ -8,5 +8,7 @@ namespace Manero_Backend.Repositories
 		public ProductRepository(ManeroDbContext context) : base(context)
 		{
 		}
+
+
 	}
 }
