@@ -1,20 +1,24 @@
-﻿using Manero_Backend.Models.Dtos;
+﻿using Manero_Backend.Helpers.Repositories;
+using Manero_Backend.Models.Dtos;
+using Manero_Backend.Models.Entities;
 using Manero_Backend.Repositories;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
 
 namespace Manero_Backend.Helpers.Services;
 
 public class ProductService
 {
     private readonly ProductRepository _repository;
+    private readonly TagRepository _tagRepository;
+    private readonly CategoryRepository _categoryRepository;
 
-    public ProductService(ProductRepository repository)
-    {
-        _repository=repository;
-    }
+	public ProductService(ProductRepository repository, TagRepository tagRepository, CategoryRepository categoryRepository)
+	{
+		_repository = repository;
+		_tagRepository = tagRepository;
+		_categoryRepository = categoryRepository;
+	}
 
-    public async Task<ProductResponse> GetProductAsync(Guid id)
+	public async Task<ProductResponse> GetProductAsync(Guid id)
     {
         var result = await _repository.GetByIdAsync(id);
         return result;
@@ -26,11 +30,29 @@ public class ProductService
         return products.Select(x => (ProductResponse)x).ToList();
     }
 
+
     public async Task<ProductResponse> CreateAsync(ProductRequest productRequest)
     {
-        var result = await _repository.CreateAsync(productRequest);
-        return result;
-    }
+		var existingTag = await _tagRepository.GetTagByNameAsync(productRequest.Tag.Name.ToLower());
+		var existingCategory = await _categoryRepository.GetCategoryByNameAsync(productRequest.Category.Name.ToLower());
+
+		if (existingTag == null && existingCategory == null)
+		{
+			var newTag = new TagEntity { Name = productRequest.Tag.Name.ToLower() };
+			var newCategory = new CategoryEntity { Name = productRequest.Category.Name.ToLower() };
+			productRequest.Tag = newTag;
+            productRequest.Category = newCategory;
+		}
+		else
+		{
+			productRequest.Tag = existingTag;
+            productRequest.Category = existingCategory;
+		}
+
+		var result = await _repository.CreateAsync(productRequest);
+		return result;
+	}
+
 
     public async Task<ProductResponse> UpdateAsync(Guid productId, ProductRequest productRequest)
     {
