@@ -1,4 +1,5 @@
 using Manero_Backend.Contexts;
+using Manero_Backend.Helpers.Repositories;
 using Manero_Backend.Helpers.Services;
 using Manero_Backend.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,8 @@ builder.Services.AddDbContext<ManeroDbContext>(x => x.UseSqlServer(builder.Confi
 
 builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<TagRepository>();
+builder.Services.AddScoped<CategoryRepository>();
 
 var app = builder.Build();
 
