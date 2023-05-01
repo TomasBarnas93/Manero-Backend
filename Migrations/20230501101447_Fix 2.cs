@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Manero_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Fix4 : Migration
+    public partial class Fix2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

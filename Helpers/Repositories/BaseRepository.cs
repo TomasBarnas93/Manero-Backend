@@ -96,12 +96,19 @@ namespace Manero_Backend.Repositories
             return null!;
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllBy(string byTerm)
-        {
-            var result = await _context.FindAsync<IEnumerable<TEntity>>(byTerm);
+		public async Task<IEnumerable<TEntity>> GetAllByTag(string tag)
+		{
+			var result = await _context.FindAsync<IEnumerable<TEntity>>(tag);
 
-            return result!;
+			return result!;
 
-        }
-    }
+		}
+		public async Task<IEnumerable<TEntity>> GetAllByGenre(string genre)
+		{
+			var result = await _context.FindAsync<IEnumerable<TEntity>>(genre);
+
+			return result!;
+
+		}
+	}
 }
