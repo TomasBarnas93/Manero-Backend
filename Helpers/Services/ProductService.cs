@@ -33,25 +33,28 @@ public class ProductService
 
     public async Task<ProductResponse> CreateAsync(ProductRequest productRequest)
     {
-		var existingTag = await _tagRepository.GetTagByNameAsync(productRequest.Tag.Name.ToLower());
-		var existingCategory = await _categoryRepository.GetCategoryByNameAsync(productRequest.Category.Name.ToLower());
+        var existingTag = await _tagRepository.GetTagByNameAsync(productRequest.Tag.Name.ToLower());
+        var existingCategory = await _categoryRepository.GetCategoryByNameAsync(productRequest.Category.Name.ToLower());
 
-		if (existingTag == null && existingCategory == null)
-		{
-			var newTag = new TagEntity { Name = productRequest.Tag.Name.ToLower() };
-			var newCategory = new CategoryEntity { Name = productRequest.Category.Name.ToLower() };
-			productRequest.Tag = newTag;
-            productRequest.Category = newCategory;
-		}
-		else
-		{
-			productRequest.Tag = existingTag;
+        if (existingTag == null && existingCategory == null)
+        {
+            productRequest.Tag = new TagEntity { Name = productRequest.Tag.Name.ToLower() };
+            productRequest.Category = new CategoryEntity { Name = productRequest.Category.Name.ToLower() };
+        }
+        else if (existingTag != null)
+        {
+            productRequest.Category = new CategoryEntity { Name = productRequest.Category.Name.ToLower() };
+            productRequest.Tag = existingTag;
+        }
+        else
+        {
+            productRequest.Tag = new TagEntity { Name = productRequest.Tag.Name.ToLower() };
             productRequest.Category = existingCategory;
-		}
+        }
 
-		var result = await _repository.CreateAsync(productRequest);
-		return result;
-	}
+        return await _repository.CreateAsync(productRequest);
+    }
+
 
 
     public async Task<ProductResponse> UpdateAsync(Guid productId, ProductRequest productRequest)
