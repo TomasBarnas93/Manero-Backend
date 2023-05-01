@@ -16,10 +16,11 @@ public class ProductEntity
 	[Required]
 	[Column(TypeName = "money")]
 	public decimal Price { get; set; }
-	public int StarRating { get; set; }
+	public int StarRating { get; set; }  
 	public string? ImageUrl { get; set; }
 	public TagEntity Tag { get; set; } = null!;
 	public CategoryEntity Category { get; set; } = null!;
+
 
 
 	public static implicit operator ProductResponse(ProductEntity entity)
