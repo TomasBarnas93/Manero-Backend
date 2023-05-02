@@ -20,6 +20,9 @@ builder.Services.AddSwaggerGen();
 //builder.Services.AddDbContext<ManeroDbContext>
 //    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroIdentityDB")));
 
+builder.Services.AddDbContext<ManeroDbContext>
+	(x => x.UseSqlServer(builder.Configuration.GetConnectionString("SirojsSql")))
+
 
 builder.Services.AddDbContext<ManeroDbContext>
     (x => x.UseSqlServer(builder.Configuration.GetConnectionString("AdisSql")));
