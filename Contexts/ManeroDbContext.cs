@@ -9,8 +9,9 @@ namespace Manero_Backend.Contexts
 		{
 		}
 
-		DbSet<ProductEntity> Products { get; set; }
-		DbSet<CategoryEntity> Category { get; set; }
-		DbSet<TagEntity> Tags { get; set; }
+		public DbSet<ProductEntity> Products { get; set; }
+		public DbSet<CategoryEntity> Category { get; set; }
+		public DbSet<TagEntity> Tags { get; set; }
+		public DbSet<ReviewEntity> Reviews { get; set; }
 	}
 }

@@ -1,77 +1,96 @@
-﻿using Manero_Backend.Helpers.Services;
+﻿using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Helpers.Services;
 using Manero_Backend.Models.Dtos;
+using Manero_Backend.Models.Dtos.Product;
+using Manero_Backend.Models.Dtos.Tag;
+using Manero_Backend.Models.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductController : ControllerBase
-    {
-        private readonly ProductService _productService;
+	[Route("api/[controller]")]
+	[ApiController]
+	public class ProductController : ControllerBase
+	{
+		private readonly IProductService _productService;
 
-        public ProductController(ProductService productService)
-        {
-            _productService = productService;
-        }
+		public ProductController(IProductService productService)
+		{
+			_productService = productService;
+		}
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var products = await _productService.GetAllAsync();
-            return Ok(products);
-        }
+		[HttpGet]
+		public async Task<IEnumerable<ProductResponse>> GetAllAsync()
+		{
+			return await _productService.GetAllAsync();
+		}
+		
+		[HttpPost]
+		public async Task<IActionResult> CreateAsync(ProductRequest request)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest();
+			
+			var result = await _productService.CreateAsync(request);
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
-        {
-            var product = await _productService.GetProductAsync(id);
+			return Created("", result);
+		}
+		
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetByIdAsync(Guid id)
+		{
+			var result = await _productService.GetByIdAsync(id);
 
-            if (product == null)
-            {
-                return NotFound();
-            }
+			if (result is null)
+				return NotFound();
 
-            return Ok(product);
-        }
+			return Ok(result);
+		}
+		
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> RemoveAsync(Guid id)
+		{
+			var result = await _productService.RemoveAsync(id);
 
-        [HttpPost]
-        public async Task<IActionResult> Create( ProductRequest productRequest)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
+			if (!result)
+				return NotFound();
 
-            return Created("", await _productService.CreateAsync(productRequest));
-        }
+			return Ok();
+		}
+		
+		[HttpGet("tag/{tag}")]
+		public async Task<IActionResult> GetByTagAsync(string tag)
+		{
+			var result = await _productService.GetByTagAsync(TagFactory.CreateRequest(tag));
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, ProductRequest productRequest)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
+			if (result is null)
+				return NoContent();
 
-            var updatedProduct = await _productService.UpdateAsync(id, productRequest);
 
-            if (updatedProduct == null)
-            {
-                return NotFound();
-            }
+			return Ok(result);
+		}
+		
+		[HttpGet("category/{category}")]
+		public async Task<IActionResult> GetByCategoryAsync(string category)
+		{
+			var result = await _productService.GetByCategoryAsync(CategoryFactory.CreateRequest(category));
 
-            return Ok(updatedProduct);
-        }
+			if (result == null!)
+				return NoContent();
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            await _productService.DeleteAsync(id);
-            return NoContent();
-        }
 
-        [HttpGet("search/{searchTerm}")]
-        public async Task<IActionResult> Search(string searchTerm)
-        {
-            var products = await _productService.SearchAsync(searchTerm);
-            return Ok(products);
-        }
-    }
+			return Ok(result);
+		}
+
+		[HttpGet("reviews/{id}")]
+		public async Task<IActionResult> GetReviewsAsync(Guid id)
+		{
+			var result = await _productService.GetReviewsAsync(id);
+
+			if (result == null!)
+				return NoContent();
+			
+			return Ok(result);
+		}
+	}
 }

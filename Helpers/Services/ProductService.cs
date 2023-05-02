@@ -1,81 +1,78 @@
-﻿using Manero_Backend.Models.Dtos;
+﻿using System.Linq.Expressions;
+using Manero_Backend.Contexts;
+using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Helpers.Repositories;
+using Manero_Backend.Models.Dtos;
+using Manero_Backend.Models.Dtos.Category;
+using Manero_Backend.Models.Dtos.Product;
+using Manero_Backend.Models.Dtos.Review;
+using Manero_Backend.Models.Dtos.Tag;
+using Manero_Backend.Models.Entities;
+using Manero_Backend.Models.Interfaces;
+using Manero_Backend.Models.Interfaces.Repositories;
+using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Repositories;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace Manero_Backend.Helpers.Services;
 
-public class ProductService
+public class ProductService : BaseService<ProductRequest, ProductResponse, ProductEntity>, IProductService
+
 {
-    private readonly ProductRepository _repository;
-
-    public ProductService(ProductRepository repository)
+    private readonly IProductRepository _productRepository;
+    private readonly ITagService _tagService;
+    private readonly ICategoryService _categoryService;
+    private readonly IReviewService _reviewService;
+    
+    public ProductService(ManeroDbContext dbContext, IProductRepository baseRepository, ITagService tagService, ICategoryService categoryService, IReviewService reviewService) : base(dbContext, baseRepository)
+    
     {
-        _repository=repository;
+	    _productRepository = baseRepository;
+	    _tagService = tagService;
+	    _categoryService = categoryService;
+	    _reviewService = reviewService;
     }
+    
+	public override async Task<ProductResponse> CreateAsync(ProductRequest entity)
+	{
+		ProductEntity product = entity;
 
-    public async Task<ProductResponse> GetProductAsync(Guid id)
-    {
-        var result = await _repository.GetByIdAsync(id);
-        return result;
-    }
+		product.Category = await _categoryService.GetOrCreateAsync(CategoryFactory.CreateRequest(entity.Category));
+		product.Tag = await _tagService.GetOrCreateAsync(TagFactory.CreateRequest(entity.Tag));
 
-    public async Task<IEnumerable<ProductResponse>> GetAllAsync()
-    {
-        var products = await _repository.GetAllAsync();
-        return products.Select(x => (ProductResponse)x).ToList();
-    }
+		return await _productRepository.CreateAsync(product);
+	}
 
-    public async Task<ProductResponse> CreateAsync(ProductRequest productRequest)
-    {
-        var result = await _repository.CreateAsync(productRequest);
-        return result;
-    }
+	public async Task<IEnumerable<ProductResponse?>> GetByTagAsync(TagRequest tag)
+	{
+		var list = await _productRepository.SearchAsync(x=>x.Tag.Name.ToLower() == tag.Name.ToLower());
+		
+		if (!list.Any())
+			return null!;
+		
+		return list.Adapt<IEnumerable<ProductResponse>>();
+	}
 
-    public async Task<ProductResponse> UpdateAsync(Guid productId, ProductRequest productRequest)
-    {
-        var existingProduct = await _repository.GetByIdAsync(productId);
+	public async Task<IEnumerable<ProductResponse?>> GetByCategoryAsync(CategoryRequest createRequest)
+	{
+		var list = await _productRepository.SearchAsync
+			(x=>x.Category.Name.ToLower() == createRequest.Name.ToLower());
 
-        if (existingProduct == null)
-        {
-            return null;
-        }
+		if (!list.Any())
+			return null!;
+		
+		
+		return list.Adapt<IEnumerable<ProductResponse>>();
+	}
 
-        existingProduct.Name = productRequest.Name;
-        existingProduct.Description = productRequest.Description;
-        existingProduct.Color = productRequest.Color;
-        existingProduct.Size = productRequest.Size;
-        existingProduct.Price = productRequest.Price;
-        existingProduct.StarRating = productRequest.StarRating;
-        existingProduct.ImageUrl = productRequest.ImageUrl;
-        existingProduct.Tag = productRequest.Tag;
-        existingProduct.Category = productRequest.Category;
-
-        var updatedProduct =  await _repository.UpdateAsync(existingProduct);
-
-        return updatedProduct;
-    }
-
-
-    public async Task DeleteAsync(Guid id)
-    {
-        var product = await _repository.GetByIdAsync(id);
-        await _repository.RemoveAsync(product);
-    }
-
-    public async Task<IEnumerable<ProductResponse>> SearchAsync(string searchTerm)
-    {
-        var products = await _repository.GetAllAsync();
-
-        var list = products.Where(x => x.Name.ToLower().Contains(searchTerm.ToLower())||
-        x.Description.ToLower().Contains(searchTerm.ToLower()));
-
-        var result = new List<ProductResponse>();
-        foreach (var product in products)
-        {
-            result.Add(product);
-        }
-        return result;
-    }
-
+	public async Task<IEnumerable<ReviewResponse>> GetReviewsAsync(Guid id)
+	{
+		var list = await _reviewService.SearchAsync(x=>x.ProductId == id);
+		
+		if (!list.Any())
+			return null!;
+		
+		return list.Adapt<IEnumerable<ReviewResponse>>();
+	}
 }

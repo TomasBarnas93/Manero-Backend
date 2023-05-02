@@ -1,6 +1,7 @@
-﻿using Manero_Backend.Models.Entities;
+﻿using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Models.Entities;
 
-namespace Manero_Backend.Models.Dtos
+namespace Manero_Backend.Models.Dtos.Product
 {
     public class ProductResponse
 	{
@@ -12,7 +13,13 @@ namespace Manero_Backend.Models.Dtos
 		public decimal Price { get; set; }
 		public int StarRating { get; set; }
 		public string? ImageUrl { get; set; }
-		public TagEntity Tag { get; set; } = null!;
-		public CategoryEntity Category { get; set; } = null!;
+		public Guid TagId { get; set; }
+		public Guid CategoryId { get; set; }
+
+
+		public static implicit operator ProductResponse(ProductEntity entity)
+		{
+			return ProductFactory.CreateResponse(entity);
+		}
 	}
 }
