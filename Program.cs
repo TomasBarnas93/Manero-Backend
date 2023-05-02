@@ -8,6 +8,8 @@ using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Repositories;
 using Microsoft.EntityFrameworkCore;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
