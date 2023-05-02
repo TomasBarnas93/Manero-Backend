@@ -6,4 +6,11 @@ public enum CategoryEnum
     SHOES,
     TSHIRT,
     PANTS,
+    KIDS,
+    HAT,
+    BAG,
+    POLO,
+    UNISEX,
+    ACCESSORIES,
+    DRESS
 }
