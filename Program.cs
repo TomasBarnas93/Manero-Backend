@@ -24,6 +24,9 @@ builder.Services.AddDbContext<ManeroDbContext>
 	(x => x.UseSqlServer(builder.Configuration.GetConnectionString("SirojsSql")))
 
 
+builder.Services.AddDbContext<ManeroDbContext>
+    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("AdisSql")));
+
 //Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
