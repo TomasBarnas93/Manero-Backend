@@ -21,7 +21,8 @@ builder.Services.AddSwaggerGen();
 //    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroIdentityDB")));
 
 
-
+builder.Services.AddDbContext<ManeroDbContext>
+    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("AdisSql")));
 
 //Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
