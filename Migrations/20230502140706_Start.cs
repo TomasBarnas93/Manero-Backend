@@ -121,4 +121,3 @@ namespace Manero_Backend.Migrations
         }
     }
 }
-
