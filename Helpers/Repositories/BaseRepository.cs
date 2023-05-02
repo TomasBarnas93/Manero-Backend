@@ -1,19 +1,21 @@
-﻿using Manero_Backend.Contexts;
+﻿using System.Linq.Expressions;
 using Manero_Backend.Models.Interfaces;
+using Manero_Backend.Models.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Linq.Expressions;
 
-namespace Manero_Backend.Repositories
+namespace Manero_Backend.Helpers.Repositories
 {
-    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity> 
+	    where TEntity : class
     {
         #region Constructor
-        private readonly ManeroDbContext _context;
+        private readonly DbContext _dbContext;
+        private readonly DbSet<TEntity> _dbSet;
 
-        public BaseRepository(ManeroDbContext context)
+        public BaseRepository(DbContext dbContext)
         {
-            _context = context;
+	        _dbContext = dbContext;
+	        _dbSet = _dbContext.Set<TEntity>();
         }
         #endregion
 
@@ -21,94 +23,50 @@ namespace Manero_Backend.Repositories
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-			try
-			{
-				var result = await _context.Set<TEntity>().ToListAsync();
-				return result;
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
-			return null!;
-
+			var result = await _dbSet.ToListAsync();
+			return result;
 		}
-        public virtual async Task<TEntity> GetByIdAsync(Guid id)
+        
+        public virtual async Task<TEntity?> GetByIdAsync(Guid id)
         {
-            var result = await _context.FindAsync<TEntity>(id);
+            var result = await _dbSet.FindAsync(id);
 
             return result!;
-
         }
+
+        public async Task<TEntity?> SearchSingleAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+	       return await _dbSet.SingleOrDefaultAsync(predicate);
+        }
+		
+        public async Task<IEnumerable<TEntity?>> SearchAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+	        return await _dbSet.Where(predicate).ToListAsync();
+        }
+
         public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
-			try
-			{
-				_context.Set<TEntity>().Add(entity);
-				await _context.SaveChangesAsync();
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+			await _dbSet.AddAsync(entity);
+			await _dbContext.SaveChangesAsync();
+
 			return entity;
 		}
 
-        public virtual async Task RemoveAsync(TEntity entity)
+        public virtual async Task<bool> RemoveAsync(TEntity entity)
         {
-            try
-            {
-				_context?.Set<TEntity>().Remove(entity);
-				await _context!.SaveChangesAsync();
-			}
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }  
+	        _dbSet.Remove(entity);
+			var result = await _dbContext.SaveChangesAsync();
+			
+			return result > 0;
         }
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
-			try
-			{
-				_context.Set<TEntity>().Update(entity);
-				await _context.SaveChangesAsync();
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+			_dbSet.Update(entity);	
+			await _dbContext.SaveChangesAsync(); 
+
 			return entity;
 		}
         #endregion
-
-        public virtual async Task<IEnumerable<TEntity>> SearchAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            try
-            {
-				return await _context.Set<TEntity>().Where(predicate).ToListAsync();
-			}
-			catch (Exception ex)
-            {
-
-                Debug.WriteLine(ex.Message);
-            }
-            return null!;
-        }
-
-		public async Task<IEnumerable<TEntity>> GetAllByTag(string tag)
-		{
-			var result = await _context.FindAsync<IEnumerable<TEntity>>(tag);
-
-			return result!;
-
-		}
-		public async Task<IEnumerable<TEntity>> GetAllByGenre(string genre)
-		{
-			var result = await _context.FindAsync<IEnumerable<TEntity>>(genre);
-
-			return result!;
-
-		}
 	}
 }

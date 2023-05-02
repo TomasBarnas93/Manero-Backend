@@ -1,4 +1,5 @@
-﻿using Manero_Backend.Models.Entities;
+﻿using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Models.Entities;
 
 namespace Manero_Backend.Models.Dtos
 {
@@ -11,23 +12,11 @@ namespace Manero_Backend.Models.Dtos
 		public decimal Price { get; set; }
 		public int StarRating { get; set; }
 		public string? ImageUrl { get; set; }
-		public TagEntity Tag { get; set; } = null!;
-		public CategoryEntity Category { get; set; } = null!;
-
+		public string Tag { get; set; } = null!;
+		public string Category { get; set; } = null!;
 		public static implicit operator ProductEntity(ProductRequest product)
 		{
-			return new ProductEntity
-			{
-				Name = product.Name,
-				Description = product.Description,
-				Color = product.Color,
-				Size = product.Size,
-				Price = product.Price,
-				StarRating = product.StarRating,
-				ImageUrl = product.ImageUrl,
-				Tag = product.Tag,
-				Category = product.Category
-			};
+			return ProductFactory.CreateEntity(product);
 		}
 	}
 }
