@@ -14,18 +14,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Contexts
-//builder.Services.AddDbContext<ManeroDbContext>
-//    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroStoreDB")));
+builder.Services.AddDbContext<ManeroDbContext>
+    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroStoreDB")));
 
 //builder.Services.AddDbContext<ManeroDbContext>
 //    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroIdentityDB")));
 
-builder.Services.AddDbContext<ManeroDbContext>
-	(x => x.UseSqlServer(builder.Configuration.GetConnectionString("SirojsSql")));
+//builder.Services.AddDbContext<ManeroDbContext>
+//	(x => x.UseSqlServer(builder.Configuration.GetConnectionString("SirojsSql")));
 
 
-builder.Services.AddDbContext<ManeroDbContext>
-    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("AdisSql")));
+//builder.Services.AddDbContext<ManeroDbContext>
+//    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("AdisSql")));
 
 //Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
