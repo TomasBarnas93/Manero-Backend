@@ -17,11 +17,9 @@ namespace Manero_Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IEnumerable<ReviewResponse>> GetAll()
         {
-            var result = await _reviewService.GetAllAsync();
-
-            return Ok(result);
+            return await _reviewService.GetAllAsync();
         }
         
         [HttpPost("{productId}")]
@@ -32,7 +30,7 @@ namespace Manero_Backend.Controllers
             
             var result = await _reviewService.CreateAsync(productId, review);
             
-            if(result is null)
+            if(result == null!)
                 return NotFound();
 
             return Ok(result);
