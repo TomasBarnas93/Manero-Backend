@@ -2,7 +2,7 @@
 {
 	public class ReviewEntity
 	{
-		public int Id { get; set; }
+		public Guid Id { get; set; }
 		public string UserName { get; set; } = null!;
 		public int StarRating { get; set; }
 		public string? Description { get; set; }

@@ -1,105 +1,96 @@
-﻿using Manero_Backend.Helpers.Services;
+﻿using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Helpers.Services;
 using Manero_Backend.Models.Dtos;
+using Manero_Backend.Models.Dtos.Product;
+using Manero_Backend.Models.Dtos.Tag;
+using Manero_Backend.Models.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductController : ControllerBase
-    {
-        private readonly ProductService _productService;
+	[Route("api/[controller]")]
+	[ApiController]
+	public class ProductController : ControllerBase
+	{
+		private readonly IProductService _productService;
 
-        public ProductController(ProductService productService)
-        {
-            _productService = productService;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var products = await _productService.GetAllAsync();
-            return Ok(products);
-        }
-
-        [HttpGet("Get/{id}")]
-        public async Task<IActionResult> Get(Guid id)
-        {
-            var product = await _productService.GetProductAsync(id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(product);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create( ProductRequest productRequest)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            return Created("", await _productService.CreateAsync(productRequest));
-        }
-
-        [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(Guid id, ProductRequest productRequest)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            var updatedProduct = await _productService.UpdateAsync(id, productRequest);
-
-            if (updatedProduct == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(updatedProduct);
-        }
-
-        [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            await _productService.DeleteAsync(id);
-            return NoContent();
-        }
-
-        [HttpGet("search/{searchTerm}")]
-        public async Task<IActionResult> Search(string searchTerm)
-        {
-            var products = await _productService.SearchAsync(searchTerm);
-            return Ok(products);
-        }
-
-
-
-		[HttpGet("tag/{tag}")]
-		public async Task<IActionResult> GetAllByTag(string tag)
+		public ProductController(IProductService productService)
 		{
-			var product = await _productService.GetAllByTagAsync(tag);
-
-			if (product == null)
-			{
-				return NotFound();
-			}
-
-			return Ok(product);
+			_productService = productService;
 		}
 
-		[HttpGet("genre/{genre}")]
-		public async Task<IActionResult> GetAllByGenre(string genre)
+		[HttpGet]
+		public async Task<IEnumerable<ProductResponse>> GetAllAsync()
 		{
-			var product = await _productService.GetAllByTagAsync(genre);
+			return await _productService.GetAllAsync();
+		}
+		
+		[HttpPost]
+		public async Task<IActionResult> CreateAsync(ProductRequest request)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest();
+			
+			var result = await _productService.CreateAsync(request);
 
-			if (product == null)
-			{
+			return Created("", result);
+		}
+		
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetByIdAsync(Guid id)
+		{
+			var result = await _productService.GetByIdAsync(id);
+
+			if (result is null)
 				return NotFound();
-			}
 
-			return Ok(product);
+			return Ok(result);
+		}
+		
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> RemoveAsync(Guid id)
+		{
+			var result = await _productService.RemoveAsync(id);
+
+			if (!result)
+				return NotFound();
+
+			return Ok();
+		}
+		
+		[HttpGet("tag/{tag}")]
+		public async Task<IActionResult> GetByTagAsync(string tag)
+		{
+			var result = await _productService.GetByTagAsync(TagFactory.CreateRequest(tag));
+
+			if (result is null)
+				return NoContent();
+
+
+			return Ok(result);
+		}
+		
+		[HttpGet("category/{category}")]
+		public async Task<IActionResult> GetByCategoryAsync(string category)
+		{
+			var result = await _productService.GetByCategoryAsync(CategoryFactory.CreateRequest(category));
+
+			if (result == null!)
+				return NoContent();
+
+
+			return Ok(result);
+		}
+
+		[HttpGet("reviews/{id}")]
+		public async Task<IActionResult> GetReviewsAsync(Guid id)
+		{
+			var result = await _productService.GetReviewsAsync(id);
+
+			if (result == null!)
+				return NoContent();
+			
+			return Ok(result);
 		}
 	}
 }
