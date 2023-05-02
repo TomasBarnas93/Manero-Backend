@@ -11,7 +11,6 @@ public class ProductEntity
 	public string Description { get; set; } = null!;
 	public string Color { get; set; } = null!;
 	public string Size { get; set; } = null!;
-	[Column("money")]
 	public decimal Price { get; set; }
 	public int StarRating { get; set; }
 	public string? ImageUrl { get; set; }
