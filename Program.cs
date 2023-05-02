@@ -13,16 +13,24 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddDbContext<ManeroDbContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("azure-db")));
-builder.Services.AddDbContext<ManeroDbContext>(options => 
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostGreSql")));
+//Contexts
+//builder.Services.AddDbContext<ManeroDbContext>
+//    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroStoreDB")));
+
+//builder.Services.AddDbContext<ManeroDbContext>
+//    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroIdentityDB")));
 
 
+
+
+//Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
+
+//Services
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
