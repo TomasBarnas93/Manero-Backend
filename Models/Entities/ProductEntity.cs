@@ -4,14 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Manero_Backend.Models.Entities;
 
-public class ProductEntity
+public class ProductEntity : BaseEntity
 {
-	public Guid Id { get; set; }
 	public string Name { get; set; } = null!;
 	public string Description { get; set; } = null!;
 	public string Color { get; set; } = null!;
 	public string Size { get; set; } = null!;
-	[Column("money")]
 	public decimal Price { get; set; }
 	public int StarRating { get; set; }
 	public string? ImageUrl { get; set; }
