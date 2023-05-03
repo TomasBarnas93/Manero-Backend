@@ -68,11 +68,12 @@ public class BaseService<TRequest, TResponse, TEntity> : IBaseService<TRequest, 
     public virtual async Task<TResponse?> GetByIdAsync(Guid id)
     {
         var entity = await _baseRepository.GetByIdAsync(id);
-        
-        var response = entity as TResponse;
-        
-        return response!;
+
+        var response = entity.Adapt<TResponse>();
+
+        return response;
     }
+
 
     public virtual async Task<TResponse?> SearchSingleAsync(Expression<Func<TEntity, bool>> predicate)
     {
