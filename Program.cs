@@ -15,9 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Contexts
 builder.Services.AddDbContext<ManeroDbContext>
     (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroStoreDB")));
+
 
 //builder.Services.AddDbContext<ManeroDbContext>
 //    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroIdentityDB")));
