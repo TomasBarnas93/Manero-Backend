@@ -1,8 +1,7 @@
 ﻿namespace Manero_Backend.Models.Entities
 {
-	public class ReviewEntity
+	public class ReviewEntity : BaseEntity
 	{
-		public Guid Id { get; set; }
 		public string UserName { get; set; } = null!;
 		public int StarRating { get; set; }
 		public string? Description { get; set; }
