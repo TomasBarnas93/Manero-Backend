@@ -16,7 +16,7 @@ public class ProductFactory
             Color = entity.Color,
             Size = entity.Size,
             Price = entity.Price,
-            StarRating = entity.Reviews.Count > 0 ? entity.Reviews.Sum(r => r.StarRating) / entity.Reviews.Count : 0, 
+            StarRating = entity.StarRating, 
             ImageUrl = entity.ImageUrl,
             TagId = entity.TagId,
             CategoryId = entity.CategoryId,
