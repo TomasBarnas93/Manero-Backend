@@ -17,13 +17,24 @@ namespace Manero_Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ReviewResponse>> GetAll()
+        public async Task<IEnumerable<ReviewResponse>> GetAllAsync()
         {
             return await _reviewService.GetAllAsync();
         }
         
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(Guid id)
+        {
+            var result = await _reviewService.GetByIdAsync(id);
+
+            if (result is null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        
         [HttpPost("{productId}")]
-        public async Task<IActionResult> CreateReview(Guid productId, [FromBody] ReviewRequest review)
+        public async Task<IActionResult> CreateAsync(Guid productId, [FromBody] ReviewRequest review)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -33,11 +44,11 @@ namespace Manero_Backend.Controllers
             if(result == null!)
                 return NotFound();
 
-            return Ok(result);
+            return Created("", result);
         }
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateReview(Guid id, [FromBody] ReviewRequest review)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] ReviewRequest review)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -51,7 +62,7 @@ namespace Manero_Backend.Controllers
         }
         
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReview(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var result = await _reviewService.RemoveAsync(id);
             
