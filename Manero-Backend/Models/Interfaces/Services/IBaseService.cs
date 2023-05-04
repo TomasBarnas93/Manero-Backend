@@ -1,6 +1,4 @@
 using System.Linq.Expressions;
-using Manero_Backend.Models.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Manero_Backend.Models.Interfaces.Services;
 

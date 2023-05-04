@@ -1,12 +1,11 @@
 ﻿using Manero_Backend.Contexts;
 using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
-using Manero_Backend.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Manero_Backend.Helpers.Repositories
 {
-	public class TagRepository : BaseRepository<TagEntity>, ITagRepository
+    public class TagRepository : BaseRepository<TagEntity>, ITagRepository
 	{
 		private readonly ManeroDbContext _context;
 		public TagRepository(ManeroDbContext context) : base(context)

@@ -1,15 +1,11 @@
-﻿using Manero_Backend.Filters;
-using Manero_Backend.Helpers.Factory;
-using Manero_Backend.Helpers.Services;
-using Manero_Backend.Models.Dtos;
+﻿using Manero_Backend.Helpers.Factory;
 using Manero_Backend.Models.Dtos.Product;
-using Manero_Backend.Models.Dtos.Tag;
 using Manero_Backend.Models.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class ProductController : ControllerBase
 	{

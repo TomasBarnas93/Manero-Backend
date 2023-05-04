@@ -1,4 +1,3 @@
-using Manero_Backend.Models.Dtos;
 using Manero_Backend.Models.Dtos.Product;
 using Manero_Backend.Models.Entities;
 

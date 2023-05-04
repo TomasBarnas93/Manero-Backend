@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Manero_Backend.Models.Auth;
 
 namespace Manero_Backend.Models.Entities;
