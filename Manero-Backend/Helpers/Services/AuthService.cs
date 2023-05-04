@@ -1,4 +1,3 @@
-using Manero_Backend.Models.Auth;
 using Manero_Backend.Models.Dtos.Authentication;
 using Manero_Backend.Models.Interfaces.Services;
 

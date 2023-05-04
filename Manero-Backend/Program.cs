@@ -1,10 +1,7 @@
-using System.Text;
 using Manero_Backend.Contexts;
 using Manero_Backend.Helpers.Repositories;
 using Manero_Backend.Helpers.Services;
 using Manero_Backend.Models.Auth;
-using Manero_Backend.Models.Entities;
-using Manero_Backend.Models.Interfaces;
 using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Repositories;
@@ -12,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,12 +24,6 @@ builder.Services.AddDbContext<ManeroDbContext>
 builder.Services.AddDbContext<AuthDbContext>
     (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroIdentityDB")));
 
-//builder.Services.AddDbContext<ManeroDbContext>
-//	(x => x.UseSqlServer(builder.Configuration.GetConnectionString("SirojsSql")));
-
-
-//builder.Services.AddDbContext<ManeroDbContext>
-//    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("AdisSql")));
 
 //Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();

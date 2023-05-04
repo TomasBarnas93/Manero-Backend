@@ -1,8 +1,4 @@
-﻿using Manero_Backend.Models.Dtos;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Manero_Backend.Models.Entities;
+﻿namespace Manero_Backend.Models.Entities;
 
 public class ProductEntity : BaseEntity
 {
