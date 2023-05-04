@@ -1,7 +1,7 @@
 ﻿using Manero_Backend.Helpers.Factory;
 using Manero_Backend.Models.Entities;
 
-namespace Manero_Backend.Models.Dtos
+namespace Manero_Backend.Models.Dtos.Product
 {
     public class ProductRequest
 	{

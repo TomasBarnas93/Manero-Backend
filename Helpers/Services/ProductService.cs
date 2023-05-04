@@ -38,12 +38,24 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 	{
 		ProductEntity product = entity;
 
-		product.Category = await _categoryService.GetOrCreateAsync(CategoryFactory.CreateRequest(entity.Category));
-		product.Tag = await _tagService.GetOrCreateAsync(TagFactory.CreateRequest(entity.Tag));
+		product = await AdjustModel(product, entity);
 
 		return await _productRepository.CreateAsync(product);
 	}
 
+	public override async Task<ProductResponse?> UpdateAsync(Guid id, ProductRequest entity)
+	{
+		var tempEntity = await _productRepository.GetByIdAsync(id);
+
+		if (tempEntity is null)
+			return null;
+
+		tempEntity = await AdjustModel(tempEntity, entity);
+
+		return await _productRepository.UpdateAsync(tempEntity);
+
+	}
+	
 	public async Task<IEnumerable<ProductResponse?>> GetByTagAsync(TagRequest tag)
 	{
 		var list = await _productRepository.SearchAsync(x=>x.Tag.Name.ToLower() == tag.Name.ToLower());
@@ -74,5 +86,34 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 			return null!;
 		
 		return list.Adapt<IEnumerable<ReviewResponse>>();
+	}
+
+	private async Task<ProductEntity> AdjustModel(ProductEntity entity, ProductRequest request)
+	{
+		if(request.Name != "")
+			entity.Name = request.Name;
+		
+		if(request.Description != "")
+			entity.Description = request.Description;
+		
+		if(request.Color != "")
+			entity.Color = request.Color;
+		
+		if(request.Size != "")
+			request.Size = entity.Size;
+		
+		if(request.Price != 0)
+			entity.Price = request.Price;
+		
+		if(request.ImageUrl != "")
+			entity.ImageUrl = request.ImageUrl;
+		
+		if(request.Category != "")
+			entity.Category = await _categoryService.GetOrCreateAsync(CategoryFactory.CreateRequest(request.Category));
+		
+		if(request.Tag != "")
+			entity.Tag = await _tagService.GetOrCreateAsync(TagFactory.CreateRequest(request.Tag));
+		
+		return entity;
 	}
 }

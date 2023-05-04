@@ -1,4 +1,5 @@
-﻿using Manero_Backend.Helpers.Factory;
+﻿using Manero_Backend.Filters;
+using Manero_Backend.Helpers.Factory;
 using Manero_Backend.Helpers.Services;
 using Manero_Backend.Models.Dtos;
 using Manero_Backend.Models.Dtos.Product;
@@ -40,6 +41,20 @@ namespace Manero_Backend.Controllers
 		public async Task<IActionResult> GetByIdAsync(Guid id)
 		{
 			var result = await _productService.GetByIdAsync(id);
+
+			if (result is null)
+				return NotFound();
+
+			return Ok(result);
+		}
+		
+		[HttpPut("{id}")]
+		public async Task<IActionResult> UpdateAsync(Guid id, ProductRequest request)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest();
+
+			var result = await _productService.UpdateAsync(id, request);
 
 			if (result is null)
 				return NotFound();
