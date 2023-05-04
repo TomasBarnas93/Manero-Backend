@@ -50,9 +50,11 @@ public class BaseService<TRequest, TResponse, TEntity> : IBaseService<TRequest, 
         if (tempEntity is null)
             return null;
         
-        tempEntity = entity as TEntity;
+        tempEntity = entity.Adapt(tempEntity!);
         
-        return await _baseRepository.UpdateAsync(tempEntity!) as TResponse;
+        var result = await _baseRepository.UpdateAsync(tempEntity!);
+        
+        return result.Adapt<TResponse>();
     }
 
     public virtual async Task<bool> RemoveAsync(Guid id)
@@ -68,6 +70,9 @@ public class BaseService<TRequest, TResponse, TEntity> : IBaseService<TRequest, 
     public virtual async Task<TResponse?> GetByIdAsync(Guid id)
     {
         var entity = await _baseRepository.GetByIdAsync(id);
+        
+        if(entity is null)
+            return null;
 
         var response = entity.Adapt<TResponse>();
 
