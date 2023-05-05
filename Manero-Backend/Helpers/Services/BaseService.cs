@@ -21,7 +21,7 @@ public class BaseService<TRequest, TResponse, TEntity> : IBaseService<TRequest, 
     }
 
 
-    public virtual async Task<IEnumerable<TResponse>> GetAllAsync()
+    public virtual async Task<IEnumerable<TResponse?>> GetAllAsync()
     {
         var listEntity = await _baseRepository.GetAllAsync();
         
