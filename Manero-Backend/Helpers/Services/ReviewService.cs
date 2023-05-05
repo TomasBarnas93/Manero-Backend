@@ -51,8 +51,10 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
     {
         ValidateModel(ref review);
 
+        
+        var user = await _userManager.FindByEmailAsync(email);
         //Check if user has this review
-        var reviewEntity = await _baseRepository.SearchSingleAsync(x => x.Id == id && x.AppUser.Email == email);
+        var reviewEntity = await _baseRepository.SearchSingleAsync(x => x.Id == id && x.AppUserId == user!.Id);
         if (reviewEntity is null) return null;
 
         var result = await base.UpdateAsync(id, review);

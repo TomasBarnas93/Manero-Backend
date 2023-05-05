@@ -17,6 +17,6 @@ public class ProductEntity : BaseEntity
 	public TagEntity Tag { get; set; } = new TagEntity();
 	public Guid CategoryId { get; set; }
 	public CategoryEntity Category { get; set; } = new CategoryEntity();
-
+	
 	public ICollection<ReviewEntity> Reviews { get; set; } = new List<ReviewEntity>();
 }

@@ -22,10 +22,6 @@ builder.Services.AddDbContext<ManeroDbContext>
     (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroStoreDB")));
 
 
-builder.Services.AddDbContext<AuthDbContext>
-    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroIdentityDB")));
-
-
 //Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
@@ -48,7 +44,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(x =>
     x.User.RequireUniqueEmail = true;
     x.Password.RequiredLength = 3;
     x.SignIn.RequireConfirmedAccount = false;
-}).AddEntityFrameworkStores<AuthDbContext>();
+}).AddEntityFrameworkStores<ManeroDbContext>();
 
 builder.Services.AddAuthentication(x =>
 {

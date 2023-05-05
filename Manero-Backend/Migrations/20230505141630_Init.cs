@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Manero_Backend.Migrations.AuthDb
+namespace Manero_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitAuthDB : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,7 +53,7 @@ namespace Manero_Backend.Migrations.AuthDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoryEntity",
+                name: "Category",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -61,11 +61,11 @@ namespace Manero_Backend.Migrations.AuthDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryEntity", x => x.Id);
+                    table.PrimaryKey("PK_Category", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TagEntity",
+                name: "Tags",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -73,7 +73,7 @@ namespace Manero_Backend.Migrations.AuthDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TagEntity", x => x.Id);
+                    table.PrimaryKey("PK_Tags", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,7 +183,7 @@ namespace Manero_Backend.Migrations.AuthDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "FavoriteProducts",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -199,17 +199,17 @@ namespace Manero_Backend.Migrations.AuthDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FavoriteProducts", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FavoriteProducts_CategoryEntity_CategoryId",
+                        name: "FK_Products_Category_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "CategoryEntity",
+                        principalTable: "Category",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FavoriteProducts_TagEntity_TagId",
+                        name: "FK_Products_Tags_TagId",
                         column: x => x.TagId,
-                        principalTable: "TagEntity",
+                        principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -219,18 +219,24 @@ namespace Manero_Backend.Migrations.AuthDb
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StarRating = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reviews_FavoriteProducts_ProductId",
+                        name: "FK_Reviews_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Products_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "FavoriteProducts",
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -275,14 +281,19 @@ namespace Manero_Backend.Migrations.AuthDb
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FavoriteProducts_CategoryId",
-                table: "FavoriteProducts",
+                name: "IX_Products_CategoryId",
+                table: "Products",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FavoriteProducts_TagId",
-                table: "FavoriteProducts",
+                name: "IX_Products_TagId",
+                table: "Products",
                 column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_AppUserId",
+                table: "Reviews",
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_ProductId",
@@ -318,13 +329,13 @@ namespace Manero_Backend.Migrations.AuthDb
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "FavoriteProducts");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "CategoryEntity");
+                name: "Category");
 
             migrationBuilder.DropTable(
-                name: "TagEntity");
+                name: "Tags");
         }
     }
 }
