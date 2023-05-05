@@ -1,8 +1,10 @@
 using Manero_Backend.Contexts;
+using Manero_Backend.Models.Auth;
 using Manero_Backend.Models.Dtos.Review;
 using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Interfaces.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Manero_Backend.Helpers.Services;
@@ -11,14 +13,16 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
 {
     private readonly IProductRepository _productRepository;
     private readonly IReviewRepository _baseRepository;
-    
-    public ReviewService(ManeroDbContext dbContext, IReviewRepository baseRepository, IProductRepository productRepository ) : base(dbContext, baseRepository)
+    private readonly UserManager<AppUser> _userManager;
+
+    public ReviewService(ManeroDbContext dbContext, IReviewRepository baseRepository, IProductRepository productRepository, UserManager<AppUser> userManager) : base(dbContext, baseRepository)
     {
         _baseRepository = baseRepository;
         _productRepository = productRepository;
+        _userManager = userManager;
     }
 
-    public async Task<ReviewResponse> CreateAsync(Guid productId, ReviewRequest review)
+    public async Task<ReviewResponse> CreateAsync(Guid productId, ReviewRequest review, string email)
     {
         var product = await _productRepository.GetByIdAsync(productId);
 
@@ -27,9 +31,14 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
         
         ValidateModel(ref review);
         
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user is null) return null!;
+        
+        
         ReviewEntity reviewEntity = review;
 
         reviewEntity.Product = product;
+        reviewEntity.AppUser = user;
         
         var response =  await _baseRepository.CreateAsync(reviewEntity);
         
@@ -38,16 +47,19 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
         return response;
     }
     
-    public override async Task<ReviewResponse?> UpdateAsync(Guid id, ReviewRequest review)
+    public async Task<ReviewResponse?> UpdateAsync(Guid id, ReviewRequest review, string email)
     {
         ValidateModel(ref review);
-        
+
+        //Check if user has this review
+        var reviewEntity = await _baseRepository.SearchSingleAsync(x => x.Id == id && x.AppUser.Email == email);
+        if (reviewEntity is null) return null;
+
         var result = await base.UpdateAsync(id, review);
         
         if(result is null)
             return null;
 
-        var reviewEntity = await _baseRepository.SearchSingleAsync(x => x.Id == id);
         
         await AdjustStarRating(reviewEntity!.ProductId);
         
@@ -56,7 +68,9 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
 
     public override async Task<bool> RemoveAsync(Guid id)
     {
-        await AdjustStarRating((await _baseRepository.SearchSingleAsync(x => x.Id == id))!.ProductId);
+        
+        var productId = (await _baseRepository.SearchSingleAsync(x => x.Id == id))!.ProductId;
+        await AdjustStarRating(productId);
         
         return await base.RemoveAsync(id);
     }
@@ -75,8 +89,6 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
         
         if (product is null)
             return;
-        
-        var reviews = await _baseRepository.SearchAsync(x => x.ProductId == id);
         
         product.StarRating = (int)Math.Round(product.Reviews.Average(r => r.StarRating), 0);
         

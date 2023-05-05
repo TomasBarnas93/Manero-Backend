@@ -11,5 +11,8 @@ public class AuthDbContext : IdentityDbContext<AppUser>
     {
     }
     //Also need to connect reviews to Appuser
-    public DbSet<UserFavoriteEntity> Favorites { get; set; } = null!;
+    
+    public DbSet<ReviewEntity> Reviews { get; set; } = null!;
+    public DbSet<ProductEntity> FavoriteProducts { get; set; } = null!;
+    
 }
