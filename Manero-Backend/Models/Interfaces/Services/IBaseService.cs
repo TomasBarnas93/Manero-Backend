@@ -7,7 +7,7 @@ public interface IBaseService<TRequest, TResponse, TEntity>
     where TRequest : class
     where TEntity : class
 {
-    Task<IEnumerable<TResponse>> GetAllAsync();
+    Task<IEnumerable<TResponse?>> GetAllAsync();
     Task<TResponse> CreateAsync(TRequest entity);
     Task<TResponse?> UpdateAsync(Guid id,TRequest entity);
     Task<bool> RemoveAsync(Guid id);

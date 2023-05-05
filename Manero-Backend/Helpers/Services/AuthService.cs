@@ -93,12 +93,8 @@ public class AuthService : IAuthService
     #region GetAll, this will get removed later.
     public async Task<IEnumerable<AppUser>> GetAllAsync()
     {
-        if (_userManager.Users.Any())
-        {
-            return await _userManager.Users.ToListAsync();
-        }
-        
-        return null!;
+        var result = await _userManager.Users.ToListAsync();
+        return result;
     }
 
     #endregion

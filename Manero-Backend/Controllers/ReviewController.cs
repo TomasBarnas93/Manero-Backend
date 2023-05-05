@@ -59,7 +59,7 @@ namespace Manero_Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
             
-            var email = User.FindFirst(ClaimTypes.Email)?.Value!;
+            var email = JwtToken.GetEmailFromClaim(HttpContext);
 
             var result = await _reviewService.UpdateAsync(id, review, email);
             
