@@ -9,7 +9,6 @@ public class ReviewFactory
     {
         return new ReviewEntity()
         {
-            UserName = review.UserName,
             StarRating = review.StarRating,
             Description = review.Description,
         };
@@ -20,7 +19,6 @@ public class ReviewFactory
         return new ReviewResponse
         {
             Id = response.Id,
-            UserName = response.UserName,
             StarRating = response.StarRating,
             Description = response.Description,
         };

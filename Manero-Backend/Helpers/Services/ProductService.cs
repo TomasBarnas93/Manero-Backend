@@ -76,7 +76,7 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 	{
 		var list = await _reviewService.SearchAsync(x=>x.ProductId == id);
 		
-		if (!list.Any())
+		if (!list.Any() || list == null!)
 			return null!;
 		
 		return list.Adapt<IEnumerable<ReviewResponse>>();

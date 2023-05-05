@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Manero_Backend.Helpers.JWT;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,10 +20,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ManeroDbContext>
     (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroStoreDB")));
-
-
-builder.Services.AddDbContext<AuthDbContext>
-    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroIdentityDB")));
 
 
 //Repositories
@@ -38,6 +35,7 @@ builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJwtToken, JwtToken>();
 
 
 //Identity and Authorization
@@ -46,7 +44,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(x =>
     x.User.RequireUniqueEmail = true;
     x.Password.RequiredLength = 3;
     x.SignIn.RequireConfirmedAccount = false;
-}).AddEntityFrameworkStores<AuthDbContext>();
+}).AddEntityFrameworkStores<ManeroDbContext>();
 
 builder.Services.AddAuthentication(x =>
 {

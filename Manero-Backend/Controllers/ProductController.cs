@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/[controller]")]
 	[ApiController]
 	public class ProductController : ControllerBase
 	{

@@ -74,10 +74,15 @@ namespace Manero_Backend.Helpers.Repositories
             {
                 await _dbSet.AddAsync(entity);
                 await _dbContext.SaveChangesAsync();
+                
+                return entity;
             }
-            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+            catch (Exception ex) 
+            { 
+                Debug.WriteLine(ex.Message);
+                return null!;
+            }
 
-            return entity;
         }
 
         public virtual async Task<bool> RemoveAsync(TEntity entity)
