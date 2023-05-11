@@ -4,6 +4,6 @@
     {
         public string Name { get; set; } = null!;
         
-        public ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
+        public ICollection<TagProductEntity> TagProducts { get; set; }
     }
 }

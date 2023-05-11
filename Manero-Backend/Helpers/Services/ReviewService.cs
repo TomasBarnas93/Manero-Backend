@@ -92,7 +92,7 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
         if (product is null)
             return;
         
-        product.StarRating = (int)Math.Round(product.Reviews.Average(r => r.StarRating), 0);
+        //product.StarRating = (int)Math.Round(product.Reviews.Average(r => r.StarRating), 0);
         
         await _productRepository.UpdateAsync(product);
     }

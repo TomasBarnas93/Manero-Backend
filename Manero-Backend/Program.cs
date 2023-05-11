@@ -19,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ManeroDbContext>
-    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroStoreDB")));
+    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("DevTest")));
 
 
 //Repositories

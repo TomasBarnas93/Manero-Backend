@@ -12,12 +12,12 @@ public class ProductFactory
             Id = entity.Id,
             Name = entity.Name,
             Description = entity.Description,
-            Color = entity.Color,
-            Size = entity.Size,
+            //Color = entity.Color,
+            //Size = entity.Size,
             Price = entity.Price,
-            StarRating = entity.StarRating, 
+            //StarRating = entity.StarRating, 
             ImageUrl = entity.ImageUrl,
-            TagId = entity.TagId,
+            //TagId = entity.TagId,
             CategoryId = entity.CategoryId,
         };
     }
@@ -28,8 +28,8 @@ public class ProductFactory
         {
             Name = product.Name,
             Description = product.Description,
-            Color = product.Color,
-            Size = product.Size,
+            //Color = product.Color,
+            //Size = product.Size,
             Price = product.Price,
             ImageUrl = product.ImageUrl,
         };

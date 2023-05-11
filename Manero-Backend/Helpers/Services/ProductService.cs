@@ -52,7 +52,7 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 	
 	public async Task<IEnumerable<ProductResponse?>> GetByTagAsync(TagRequest tag)
 	{
-		var list = await _productRepository.SearchAsync(x=>x.Tag.Name.ToLower() == tag.Name.ToLower());
+		IEnumerable<ProductResponse> list = null;//await _productRepository.SearchAsync(x=>x.Tag.Name.ToLower() == tag.Name.ToLower());
 		
 		if (!list.Any())
 			return null!;
@@ -84,6 +84,7 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 
 	private async Task<ProductEntity> AdjustModel(ProductEntity entity, ProductRequest request)
 	{
+		return null;
 		if(request.Name != "")
 			entity.Name = request.Name;
 		
@@ -91,10 +92,10 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 			entity.Description = request.Description;
 		
 		if(request.Color != "")
-			entity.Color = request.Color;
+			//entity.Color = request.Color;
 		
 		if(request.Size != "")
-			request.Size = entity.Size;
+			//request.Size = entity.Size;
 		
 		if(request.Price != 0)
 			entity.Price = request.Price;
@@ -106,8 +107,8 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 			entity.Category = await _categoryService.GetOrCreateAsync(CategoryFactory.CreateRequest(request.Category));
 		
 		if(request.Tag != "")
-			entity.Tag = await _tagService.GetOrCreateAsync(TagFactory.CreateRequest(request.Tag));
+			//entity.Tag = await _tagService.GetOrCreateAsync(TagFactory.CreateRequest(request.Tag));
 		
-		return entity;
+		return null;
 	}
 }
