@@ -13,5 +13,7 @@ namespace Manero_Backend.Helpers.Repositories
         {
             _context = dbContext;
         }
+
+       
     }
 }

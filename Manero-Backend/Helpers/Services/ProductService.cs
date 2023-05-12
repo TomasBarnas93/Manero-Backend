@@ -7,7 +7,10 @@ using Manero_Backend.Models.Dtos.Tag;
 using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Interfaces.Services;
+using Manero_Backend.Models.Schemas.Product;
 using Mapster;
+using System.Collections.Generic;
+using System.Formats.Asn1;
 
 namespace Manero_Backend.Helpers.Services;
 
@@ -18,26 +21,83 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
     private readonly ITagService _tagService;
     private readonly ICategoryService _categoryService;
     private readonly IReviewService _reviewService;
-    
-    public ProductService(ManeroDbContext dbContext, IProductRepository baseRepository, ITagService tagService, ICategoryService categoryService, IReviewService reviewService) : base(dbContext, baseRepository)
-    
+
+	private readonly ITagProductService _tagProductService;
+	private readonly IProductColorService _productColorService;
+	private readonly IProductSizeService _productSizeService;
+
+    public ProductService(ManeroDbContext dbContext, IProductRepository baseRepository, ITagService tagService, ICategoryService categoryService, IReviewService reviewService, ITagProductService tagProductService, IProductColorService productColorService, IProductSizeService productSizeService) : base(dbContext, baseRepository)
+
     {
-	    _productRepository = baseRepository;
-	    _tagService = tagService;
-	    _categoryService = categoryService;
-	    _reviewService = reviewService;
+        _productRepository = baseRepository;
+        _tagService = tagService;
+        _categoryService = categoryService;
+        _reviewService = reviewService;
+        _tagProductService = tagProductService;
+        _productColorService = productColorService;
+        _productSizeService = productSizeService;
     }
-    
-	public override async Task<ProductResponse> CreateAsync(ProductRequest entity)
+
+    public async Task<List<object>> GetByOptions(IEnumerable<ProductOptionSchema> schema)
+    {
+		List<object> result = new List<object>();
+
+        foreach (var productOption in schema)
+		{
+			if (productOption.TagId == null && productOption.CategoryId == null) //1.
+			{
+				result.Add(new { option = productOption, result = new List<ProductMinDto>() });
+
+				continue;
+			}
+
+            if (productOption.TagId != null && productOption.CategoryId != null)
+            {
+                if ((await _categoryService.ExistsAsync((Guid)productOption.CategoryId) == false) || (await _tagService.ExistsAsync((Guid)productOption.TagId) == false))
+                {
+                    result.Add(new { option = productOption, result = new List<ProductMinDto>() });
+                    continue;
+                }
+            }
+
+            result.Add(new { option = productOption, result = (await _productRepository.GetByOption(productOption)).Select(x => (ProductMinDto)x) });
+        }
+
+		return result;
+    }
+
+
+	public async Task<ProductEntity> CreateAsync(ProductSchema schema)
 	{
-		ProductEntity product = entity;
 
-		product = await AdjustModel(product, entity);
+        ProductEntity entity = await _productRepository.CreateAsync(schema);
 
-		return await _productRepository.CreateAsync(product);
+		await _tagProductService.AddRangedAsync(schema.TagIds.Select(x => new TagProductEntity() { TagId = x, ProductId = entity.Id }).ToList());
+		await _productColorService.AddRangedAsync(schema.ColorIds.Select(x => new ProductColorEntity() { ColorId = x, ProductId = entity.Id }).ToList());
+		await _productSizeService.AddRangedAsync(schema.SizeIds.Select(x => new ProductSizeEntity() { SizeId = x, ProductId = entity.Id}).ToList());
+
+		
+		return null;
 	}
 
-	public override async Task<ProductResponse?> UpdateAsync(Guid id, ProductRequest entity)
+
+	/*
+    public override async Task<ProductResponse> CreateAsync(ProductRequest entity)
+    {
+        ProductEntity product = entity;
+
+        product = await AdjustModel(product, entity);
+
+        return await _productRepository.CreateAsync(product);
+    }
+
+	*/
+
+
+
+
+
+    public override async Task<ProductResponse?> UpdateAsync(Guid id, ProductRequest entity)
 	{
 		var tempEntity = await _productRepository.GetByIdAsync(id);
 
@@ -111,4 +171,12 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 		
 		return null;
 	}
+
+
+    public async Task FillDataAsync()
+	{
+		await _productRepository.FillDataAsync();
+	}
+
+
 }

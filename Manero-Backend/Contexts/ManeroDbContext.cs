@@ -118,13 +118,23 @@ namespace Manero_Backend.Contexts
                 .WithOne(r => r.Product)
                 .HasForeignKey(r => r.ProductId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+				product.HasMany(p => p.ProductColors)
+				.WithOne(pc => pc.Product)
+				.HasForeignKey(pc => pc.ProductId)
+				.OnDelete(DeleteBehavior.NoAction);
+
+                product.HasMany(p => p.ProductSizes)
+                .WithOne(ps => ps.Product)
+                .HasForeignKey(ps => ps.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
             });
 
 			modelBuilder.Entity<CategoryEntity>(category =>
 			{
 				category.HasMany(c => c.Products)
 				.WithOne(p => p.Category)
-				.HasForeignKey(p => p.CompanyId)
+				.HasForeignKey(p => p.CategoryId)
 				.OnDelete(DeleteBehavior.NoAction);
 			});
 
@@ -134,6 +144,12 @@ namespace Manero_Backend.Contexts
 				.WithOne(op => op.Size)
 				.HasForeignKey(op => op.SizeId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+				size.HasMany(s => s.ProductSizes)
+				.WithOne(ps => ps.Size)
+				.HasForeignKey(ps => ps.SizeId)
+				.OnDelete(DeleteBehavior.NoAction);
+				
 			});
 
 			modelBuilder.Entity<ColorEntity>(color => 
@@ -141,6 +157,11 @@ namespace Manero_Backend.Contexts
 				color.HasMany(c => c.OrderProducts)
 				.WithOne(op => op.Color)
 				.HasForeignKey(op => op.ColorId)
+				.OnDelete(DeleteBehavior.NoAction);
+
+				color.HasMany(c => c.ProductColors)
+				.WithOne(pc => pc.Color)
+				.HasForeignKey(pc => pc.ColorId)
 				.OnDelete(DeleteBehavior.NoAction);
 			});
 
@@ -197,5 +218,7 @@ namespace Manero_Backend.Contexts
 		public DbSet<UserPromoCodeEntity> UserPromoCodes { get; set; }
 		public DbSet<WishEntity> WishList { get; set; }
 
+		public DbSet<ProductColorEntity> ProductColors { get; set; }
+		public DbSet<ProductSizeEntity> ProductSizes { get; set; }
 	}
 }

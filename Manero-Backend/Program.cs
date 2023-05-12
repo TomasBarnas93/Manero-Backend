@@ -14,7 +14,8 @@ using Manero_Backend.Helpers.JWT;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -27,8 +28,9 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-
-
+builder.Services.AddScoped<ITagProductRepository, TagProductRepository>();
+builder.Services.AddScoped<IProductColorRepository, ProductColorRepository>();  
+builder.Services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
 //Services
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ITagService, TagService>();
@@ -36,6 +38,9 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtToken, JwtToken>();
+builder.Services.AddScoped<ITagProductService, TagProductService>();
+builder.Services.AddScoped<IProductColorService, ProductColorService>();
+builder.Services.AddScoped<IProductSizeService, ProductSizeService>();
 
 
 //Identity and Authorization

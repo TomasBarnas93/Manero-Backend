@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Manero_Backend.Models.Dtos.Product;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Manero_Backend.Models.Entities;
 
@@ -21,4 +22,23 @@ public class ProductEntity : BaseEntity
 	public ICollection<TagProductEntity> TagProducts { get; set; } //M:M
 	public ICollection<ReviewEntity> Reviews { get; set; } //M:M
 	public ICollection<WishEntity> WishList { get; set; } //M:M
+	public ICollection<ProductColorEntity> ProductColors { get; set; } //M:M
+	public ICollection<ProductSizeEntity> ProductSizes { get; set; } //M:M
+
+	public static implicit operator ProductMinDto(ProductEntity entity)
+	{
+		return new ProductMinDto()
+		{
+			Id = entity.Id,
+			Name = entity.Name,
+			Rating = entity.Reviews.Count != 0 ? entity.Reviews.Sum(r => r.Rating) / entity.Reviews.Count : 0,
+			ReviewCount = entity.Reviews.Count,
+			ImageUrl = entity.ImageUrl,
+			Price = entity.Price,
+			Tags = entity.TagProducts.Select(x => new TagEntity() { Id = x.Tag.Id, Name = x.Tag.Name }).ToList(),
+			Category = entity.Category,
+			Colors = entity.ProductColors.Select(x => new ColorEntity() { Id = x.Color.Id, Name = x.Color.Name, Hex = x.Color.Hex }).ToList(),
+			Sizes = entity.ProductSizes.Select(x => new SizeEntity() { Id = x.Size.Id, Name = x.Size.Name }).ToList()
+		};
+	}
 }

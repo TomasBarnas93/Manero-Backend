@@ -18,6 +18,14 @@ namespace Manero_Backend.Controllers
             _reviewService = reviewService;
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync()
+        {
+
+        }
+
+
         [HttpGet]
         public async Task<IEnumerable<ReviewResponse>> GetAllAsync()
         {

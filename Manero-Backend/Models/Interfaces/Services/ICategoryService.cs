@@ -5,5 +5,7 @@ namespace Manero_Backend.Models.Interfaces.Services;
 
 public interface ICategoryService : IBaseService<CategoryRequest, CategoryResponse, CategoryEntity> 
 {
+    public Task<bool> ExistsAsync(Guid categoryId);
+
     public Task<CategoryEntity> GetOrCreateAsync(CategoryRequest entityCategory);
 }
