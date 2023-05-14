@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Manero_Backend.Helpers.JWT;
-
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -22,7 +22,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ManeroDbContext>
     (x => x.UseSqlServer(builder.Configuration.GetConnectionString("DevTest")));
 
-
 //Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
@@ -31,6 +30,9 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<ITagProductRepository, TagProductRepository>();
 builder.Services.AddScoped<IProductColorRepository, ProductColorRepository>();  
 builder.Services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
+
+
+
 //Services
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ITagService, TagService>();

@@ -1,6 +1,7 @@
 using System.Net;
 using Manero_Backend.Models.Dtos.Authentication;
 using Manero_Backend.Models.Interfaces.Services;
+using Manero_Backend.Models.Schemas.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Controllers
@@ -26,40 +27,52 @@ namespace Manero_Backend.Controllers
         }
         
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterForm form)
+        public async Task<IActionResult> Register(RegisterSchema schema)
         {
-            var result = await _authService.RegisterAsync(form);
+            if(!ModelState.IsValid)
+                return BadRequest("");
 
-            return result switch
+            try
             {
-                HttpStatusCode.Created => Created("", null),
-                HttpStatusCode.Conflict => Conflict(),
-                HttpStatusCode.BadRequest => BadRequest(),
-                _ => BadRequest()
-            };
+                return await _authService.RegisterAsync(schema);
+            }
+            catch(Exception e) //Ilogger
+            {
+                return StatusCode(500, "");
+            }
         }
         
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginForm form)
+        public async Task<IActionResult> Login(LoginSchema schema)
         {
-            var result = await _authService.LoginAsync(form);
-            
-            return result switch
+            if (!ModelState.IsValid)
+                return BadRequest("");
+
+            try
             {
-                null => BadRequest(),
-                _ => Ok(result)
-            };
+                return await _authService.LoginAsync(schema);
+            }
+            catch(Exception e) //Ilogger
+            {
+                return StatusCode(500,"");
+            }
         }
         
         //You dont need to use this to logout. You can just delete the token from the client side.
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
-            var result = await _authService.LogoutAsync();
-            
-            return result ? Ok() : BadRequest();
+            try
+            {
+                return await _authService.LogoutAsync();
+            }
+            catch(Exception e) //Ilogger
+            {
+                return StatusCode(500, "");
+            }
         }
-        
+
+        [Obsolete("May not work as intended. DO NO USE !")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

@@ -22,7 +22,7 @@ namespace Manero_Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync()
         {
-
+            return Ok();
         }
 
 

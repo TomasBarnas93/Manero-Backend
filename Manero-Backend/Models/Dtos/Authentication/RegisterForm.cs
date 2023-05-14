@@ -23,5 +23,5 @@ public class RegisterForm
     [Compare(nameof(Password))]
     public string ConfirmPassword { get; set; } = string.Empty;
 
-    public static implicit operator AppUser(RegisterForm registrationForm) => IdentityFactory.Create(registrationForm); 
+    //public static implicit operator AppUser(RegisterForm registrationForm) => IdentityFactory.Create(registrationForm); 
 }
