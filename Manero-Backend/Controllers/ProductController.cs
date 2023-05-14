@@ -1,4 +1,6 @@
 ﻿using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Helpers.JWT;
+using Manero_Backend.Helpers.Services;
 using Manero_Backend.Models.Dtos.Product;
 using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Models.Schemas.Product;
@@ -17,7 +19,28 @@ namespace Manero_Backend.Controllers
 			_productService = productService;
 		}
 
-		[HttpPost("products")]
+		[HttpGet("id/{id}")]
+		public async Task<IActionResult> GetById(Guid id)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest("");
+
+			try
+			{
+                var userId = JwtToken.GetIdFromClaim(HttpContext);
+
+
+
+                return await _productService.GetByGuid(id);
+			}
+			catch(Exception e)//ilogger
+			{
+				return StatusCode(500,"");
+			}
+		}
+
+
+		[HttpPost("options")]
 		public async Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema)
 		{
 			if (!ModelState.IsValid)
@@ -25,9 +48,7 @@ namespace Manero_Backend.Controllers
 
 			try
 			{
-
-
-				return Ok(await _productService.GetByOptions(schema));
+				return await _productService.GetByOptions(schema);
 			}
 			catch(Exception e) //Log
 			{
@@ -57,15 +78,16 @@ namespace Manero_Backend.Controllers
 
 
 
+        [Obsolete("May not work as intended. DO NO USE !")]
         [HttpGet]
 		public async Task<IEnumerable<ProductResponse>> GetAllAsync()
 		{
 			return await _productService.GetAllAsync();
 		}
-		
-		
-		
-		[HttpGet("{id}")]
+
+
+        [Obsolete("May not work as intended. DO NO USE !")]
+        [HttpGet("{id}")]
 		public async Task<IActionResult> GetByIdAsync(Guid id)
 		{
 			var result = await _productService.GetByIdAsync(id);
@@ -75,8 +97,11 @@ namespace Manero_Backend.Controllers
 
 			return Ok(result);
 		}
-		
-		[HttpPut("{id}")]
+
+
+        [Obsolete("May not work as intended. DO NO USE !")]
+
+        [HttpPut("{id}")]
 		public async Task<IActionResult> UpdateAsync(Guid id, ProductRequest request)
 		{
 			if (!ModelState.IsValid)
@@ -89,8 +114,10 @@ namespace Manero_Backend.Controllers
 
 			return Ok(result);
 		}
-		
-		[HttpDelete("{id}")]
+
+
+        [Obsolete("May not work as intended. DO NO USE !")]
+        [HttpDelete("{id}")]
 		public async Task<IActionResult> RemoveAsync(Guid id)
 		{
 			var result = await _productService.RemoveAsync(id);
@@ -100,8 +127,11 @@ namespace Manero_Backend.Controllers
 
 			return Ok();
 		}
-		
-		[HttpGet("tag/{tag}")]
+
+
+        [Obsolete("May not work as intended. DO NO USE !")]
+
+        [HttpGet("tag/{tag}")]
 		public async Task<IActionResult> GetByTagAsync(string tag)
 		{
 			var result = await _productService.GetByTagAsync(TagFactory.CreateRequest(tag));
@@ -112,8 +142,11 @@ namespace Manero_Backend.Controllers
 
 			return Ok(result);
 		}
-		
-		[HttpGet("category/{category}")]
+
+
+        [Obsolete("May not work as intended. DO NO USE !")]
+
+        [HttpGet("category/{category}")]
 		public async Task<IActionResult> GetByCategoryAsync(string category)
 		{
 			var result = await _productService.GetByCategoryAsync(CategoryFactory.CreateRequest(category));
@@ -125,7 +158,10 @@ namespace Manero_Backend.Controllers
 			return Ok(result);
 		}
 
-		[HttpGet("reviews/{id}")]
+
+        [Obsolete("May not work as intended. DO NO USE !")]
+
+        [HttpGet("reviews/{id}")]
 		public async Task<IActionResult> GetReviewsAsync(Guid id)
 		{
 			var result = await _productService.GetReviewsAsync(id);
@@ -136,7 +172,10 @@ namespace Manero_Backend.Controllers
 			return Ok(result);
 		}
 
-		[HttpGet("test")]
+
+        [Obsolete("May not work as intended. DO NO USE !")]
+
+        [HttpGet("test")]
 		public async Task<IActionResult> TestAsync()
 		{
 			await _productService.FillDataAsync();

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Manero_Backend.Helpers.JWT;
 using Manero_Backend.Models.Dtos.Review;
 using Manero_Backend.Models.Interfaces.Services;
+using Manero_Backend.Models.Schemas.Review;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,18 +21,32 @@ namespace Manero_Backend.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync()
+        [Authorize]
+        public async Task<IActionResult> CreateAsync(ReviewSchema schema)
         {
-            return Ok();
+            if(!ModelState.IsValid)
+                return BadRequest("");
+
+            try
+            {
+                var userId = JwtToken.GetIdFromClaim(HttpContext);
+
+                return await _reviewService.CreateAsync(schema, userId);
+            }
+            catch(Exception e) //Ilogger
+            {
+                return StatusCode(500, "");
+            }
         }
 
-
+        [Obsolete("May not work as intended. DO NO USE !")]
         [HttpGet]
         public async Task<IEnumerable<ReviewResponse>> GetAllAsync()
         {
             return await _reviewService.GetAllAsync();
         }
-        
+
+        [Obsolete("May not work as intended. DO NO USE !")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
@@ -42,7 +57,8 @@ namespace Manero_Backend.Controllers
 
             return Ok(result);
         }
-        
+
+        [Obsolete("May not work as intended. DO NO USE !")]
         [Authorize]
         [HttpPost("{productId}")]
         public async Task<IActionResult> CreateAsync(Guid productId, [FromBody] ReviewRequest review)
@@ -59,7 +75,8 @@ namespace Manero_Backend.Controllers
 
             return Created("", result);
         }
-        
+
+        [Obsolete("May not work as intended. DO NO USE !")]
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] ReviewRequest review)
@@ -76,7 +93,8 @@ namespace Manero_Backend.Controllers
 
             return Ok(result);
         }
-        
+
+        [Obsolete("May not work as intended. DO NO USE !")]
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)

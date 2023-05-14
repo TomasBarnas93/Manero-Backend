@@ -10,6 +10,7 @@ namespace Manero_Backend.Models.Dtos.Product
         public Guid Id { get; set; }
         public int Rating { get; set; }
         public string Name { get; set; } = null!;
+
         public string? ImageUrl { get; set; }
         public decimal Price { get; set; }
         public int ReviewCount { get; set; }
@@ -22,17 +23,3 @@ namespace Manero_Backend.Models.Dtos.Product
 }
 
 
-/*
-Guid Id
-int Rating
-string Name
-decimal Price
-List<Tag> Tags
-Tags
-Guid Id
-string Name
-
-Category
-List<Color> colors
-List<Size> sizes
-*/

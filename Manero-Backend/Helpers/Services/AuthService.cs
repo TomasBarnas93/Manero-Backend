@@ -2,6 +2,7 @@ using System.Net;
 using System.Security.Claims;
 using Manero_Backend.Helpers.Enums;
 using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Helpers.JWT;
 using Manero_Backend.Models.Auth;
 using Manero_Backend.Models.Dtos.Authentication;
 using Manero_Backend.Models.Interfaces.Services;
@@ -33,6 +34,16 @@ public class AuthService : IAuthService
     }
 
     #endregion
+
+    public async Task<IActionResult> Test(string jwtToken)
+    {
+        
+
+
+        return HttpResultFactory.Ok();
+        //return HttpResultFactory.Ok(_jwtToken.Verify(jwtToken));
+    }
+
 
     #region Register
     public async Task<IActionResult> RegisterAsync(RegisterSchema user)

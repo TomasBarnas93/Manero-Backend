@@ -1,10 +1,13 @@
 using Manero_Backend.Contexts;
+using Manero_Backend.Helpers.Factory;
 using Manero_Backend.Models.Auth;
 using Manero_Backend.Models.Dtos.Review;
 using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Interfaces.Services;
+using Manero_Backend.Models.Schemas.Review;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Manero_Backend.Helpers.Services;
@@ -12,15 +15,33 @@ namespace Manero_Backend.Helpers.Services;
 public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEntity>, IReviewService
 {
     private readonly IProductRepository _productRepository;
-    private readonly IReviewRepository _baseRepository;
+    private readonly IReviewRepository _reviewRepository;
     private readonly UserManager<AppUser> _userManager;
-
+    
     public ReviewService(ManeroDbContext dbContext, IReviewRepository baseRepository, IProductRepository productRepository, UserManager<AppUser> userManager) : base(dbContext, baseRepository)
     {
-        _baseRepository = baseRepository;
+        _reviewRepository = baseRepository;
         _productRepository = productRepository;
         _userManager = userManager;
     }
+
+    public async Task<IActionResult> CreateAsync(ReviewSchema schema, string id)
+    {
+        ReviewEntity entity = schema;
+        entity.AppUserId = id;
+
+        if (await _reviewRepository.ExistsAsync(id, entity.ProductId))
+            return HttpResultFactory.Conflict("");
+
+
+        if(await _productRepository.GetByIdAsync(entity.ProductId) == null)
+            return HttpResultFactory.BadRequest("");
+
+        await _reviewRepository.CreateAsync(entity);
+
+        return HttpResultFactory.Created("","");
+    }
+
 
     public async Task<ReviewResponse> CreateAsync(Guid productId, ReviewRequest review, string email)
     {
@@ -40,7 +61,7 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
         reviewEntity.Product = product;
         reviewEntity.AppUser = user;
         
-        var response =  await _baseRepository.CreateAsync(reviewEntity);
+        var response =  await _reviewRepository.CreateAsync(reviewEntity);
         
         await AdjustStarRating(productId);
         
@@ -54,7 +75,7 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
         
         var user = await _userManager.FindByEmailAsync(email);
         //Check if user has this review
-        var reviewEntity = await _baseRepository.SearchSingleAsync(x => x.Id == id && x.AppUserId == user!.Id);
+        var reviewEntity = await _reviewRepository.SearchSingleAsync(x => x.Id == id && x.AppUserId == user!.Id);
         if (reviewEntity is null) return null;
 
         var result = await base.UpdateAsync(id, review);
@@ -71,7 +92,7 @@ public class ReviewService : BaseService<ReviewRequest, ReviewResponse, ReviewEn
     public override async Task<bool> RemoveAsync(Guid id)
     {
         
-        var productId = (await _baseRepository.SearchSingleAsync(x => x.Id == id))!.ProductId;
+        var productId = (await _reviewRepository.SearchSingleAsync(x => x.Id == id))!.ProductId;
         await AdjustStarRating(productId);
         
         return await base.RemoveAsync(id);

@@ -1,7 +1,9 @@
 using System.Net;
+using Manero_Backend.Helpers.JWT;
 using Manero_Backend.Models.Dtos.Authentication;
 using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Models.Schemas.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Controllers
@@ -17,14 +19,9 @@ namespace Manero_Backend.Controllers
         {
             _authService = authService;
         }
-        
+
         #endregion
 
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
-        {
-            return Ok(await _authService.GetAllAsync());
-        }
         
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterSchema schema)
@@ -72,12 +69,26 @@ namespace Manero_Backend.Controllers
             }
         }
 
+        [HttpGet("test")]
+        public async Task<IActionResult> Test()
+        {
+           
+            return Ok();
+        }
+
         [Obsolete("May not work as intended. DO NO USE !")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _authService.DeleteAsync(id);
             return Ok();
+        }
+
+        [Obsolete("May not work as intended. DO NO USE !")]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _authService.GetAllAsync());
         }
 
     }

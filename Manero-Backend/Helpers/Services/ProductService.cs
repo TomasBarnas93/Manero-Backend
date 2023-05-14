@@ -1,5 +1,6 @@
 ﻿using Manero_Backend.Contexts;
 using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Helpers.JWT;
 using Manero_Backend.Models.Dtos.Category;
 using Manero_Backend.Models.Dtos.Product;
 using Manero_Backend.Models.Dtos.Review;
@@ -9,6 +10,7 @@ using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Models.Schemas.Product;
 using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 
@@ -38,7 +40,19 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
         _productSizeService = productSizeService;
     }
 
-    public async Task<List<object>> GetByOptions(IEnumerable<ProductOptionSchema> schema)
+
+	public async Task<IActionResult> GetByGuid(Guid guid)
+	{
+		ProductEntity entity = await _productRepository.GetByGuid(guid);
+		if (entity == null)
+			return HttpResultFactory.NotFound("");
+
+      
+
+        return  HttpResultFactory.Ok((ProductDto)entity);
+	}
+
+    public async Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema)
     {
 		List<object> result = new List<object>();
 
@@ -46,7 +60,7 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 		{
 			if (productOption.TagId == null && productOption.CategoryId == null) //1.
 			{
-				result.Add(new { option = productOption, result = new List<ProductMinDto>() });
+				result.Add(new { Option = productOption, Result = string.Empty, ErrorMessage = "Provide at least a TagId or a CategoryId." });
 
 				continue;
 			}
@@ -55,47 +69,35 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
             {
                 if ((await _categoryService.ExistsAsync((Guid)productOption.CategoryId) == false) || (await _tagService.ExistsAsync((Guid)productOption.TagId) == false))
                 {
-                    result.Add(new { option = productOption, result = new List<ProductMinDto>() });
+                    result.Add(new { Option = productOption, Result = string.Empty, ErrorMessage = "Either TagId or CategoryId or both do not exist." });
                     continue;
                 }
             }
 
-            result.Add(new { option = productOption, result = (await _productRepository.GetByOption(productOption)).Select(x => (ProductMinDto)x) });
+            result.Add(new { Option = productOption, Result = (await _productRepository.GetByOption(productOption)).Select(x => (ProductMinDto)x), ErrorMessage = string.Empty });
         }
 
-		return result;
+		return HttpResultFactory.Ok(result);
     }
+
+	
 
 
 	public async Task<ProductEntity> CreateAsync(ProductSchema schema)
 	{
-
+		
         ProductEntity entity = await _productRepository.CreateAsync(schema);
 
 		await _tagProductService.AddRangedAsync(schema.TagIds.Select(x => new TagProductEntity() { TagId = x, ProductId = entity.Id }).ToList());
 		await _productColorService.AddRangedAsync(schema.ColorIds.Select(x => new ProductColorEntity() { ColorId = x, ProductId = entity.Id }).ToList());
 		await _productSizeService.AddRangedAsync(schema.SizeIds.Select(x => new ProductSizeEntity() { SizeId = x, ProductId = entity.Id}).ToList());
 
-		
+
 		return null;
 	}
 
 
-	/*
-    public override async Task<ProductResponse> CreateAsync(ProductRequest entity)
-    {
-        ProductEntity product = entity;
-
-        product = await AdjustModel(product, entity);
-
-        return await _productRepository.CreateAsync(product);
-    }
-
-	*/
-
-
-
-
+	
 
     public override async Task<ProductResponse?> UpdateAsync(Guid id, ProductRequest entity)
 	{
@@ -173,10 +175,11 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 	}
 
 
+
+
+
     public async Task FillDataAsync()
 	{
 		await _productRepository.FillDataAsync();
 	}
-
-
 }

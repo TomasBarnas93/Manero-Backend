@@ -33,7 +33,6 @@ namespace Manero_Backend.Models.Schemas.Product
                 CategoryId = schema.CategoryId,
                 CompanyId = schema.CompanyId,
                 Description = schema.Description
-           
             };
         }
     }

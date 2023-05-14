@@ -49,5 +49,15 @@ namespace Manero_Backend.Helpers.Factory
         {
             return new(value);
         }
+
+        public static NotFoundResult NotFound()
+        {
+            return new();
+        }
+
+        public static NotFoundObjectResult NotFound(object? errorObject)
+        {
+            return new(errorObject);
+        }
     }
 }

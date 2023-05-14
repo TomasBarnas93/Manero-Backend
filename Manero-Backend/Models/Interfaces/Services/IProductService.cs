@@ -4,12 +4,15 @@ using Manero_Backend.Models.Dtos.Review;
 using Manero_Backend.Models.Dtos.Tag;
 using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Schemas.Product;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Models.Interfaces.Services;
 
 public interface IProductService: IBaseService<ProductRequest, ProductResponse, ProductEntity> 
 {
-    Task<List<object>> GetByOptions(IEnumerable<ProductOptionSchema> schema);
+
+    public Task<IActionResult> GetByGuid(Guid guid);
+    Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema);
 
 
 

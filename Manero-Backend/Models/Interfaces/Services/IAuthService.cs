@@ -13,7 +13,7 @@ public interface IAuthService
     Task<IActionResult> LoginAsync(LoginSchema schema);
     Task<IActionResult> LogoutAsync();
 
-
+    public Task<IActionResult> Test(string jwtToken);
     Task<bool> DeleteAsync(Guid id);
     Task<IEnumerable<AppUser>> GetAllAsync();
 }
