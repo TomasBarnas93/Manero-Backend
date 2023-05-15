@@ -31,7 +31,7 @@ builder.Services.AddScoped<ITagProductRepository, TagProductRepository>();
 builder.Services.AddScoped<IProductColorRepository, ProductColorRepository>();  
 builder.Services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
 builder.Services.AddScoped<IWishRepository, WishRepository>();
-
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 
 
 //Services
@@ -45,6 +45,8 @@ builder.Services.AddScoped<ITagProductService, TagProductService>();
 builder.Services.AddScoped<IProductColorService, ProductColorService>();
 builder.Services.AddScoped<IProductSizeService, ProductSizeService>();
 builder.Services.AddScoped<IWishService, WishService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+
 
 //Identity and Authorization
 builder.Services.AddIdentity<AppUser, IdentityRole>(x =>

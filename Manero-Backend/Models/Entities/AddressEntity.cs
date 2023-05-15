@@ -1,4 +1,5 @@
 ﻿using Manero_Backend.Models.Auth;
+using Manero_Backend.Models.Dtos.Address;
 
 namespace Manero_Backend.Models.Entities
 {
@@ -15,5 +16,20 @@ namespace Manero_Backend.Models.Entities
         public AppUser AppUser { get; set; }
 
         public ICollection<OrderEntity> Orders { get; set; } //M:1
+
+        public static implicit operator AddressDto(AddressEntity entity)
+        {
+            return new AddressDto()
+            {
+                Id = entity.Id,
+                Title = entity.Title,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                Street = entity.Street,
+                PostalCode = entity.PostalCode,
+                City = entity.City
+            };
+        }
+
     }
 }

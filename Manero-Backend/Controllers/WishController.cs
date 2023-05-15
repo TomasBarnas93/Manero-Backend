@@ -9,7 +9,7 @@ namespace Manero_Backend.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-
+    [Authorize]
     public class WishController : ControllerBase
     {
         private readonly IWishService _wishService;
@@ -19,8 +19,7 @@ namespace Manero_Backend.Controllers
             _wishService = wishService;
         }
 
-        [HttpPost("add")]
-        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> AddAsync(WishSchema schema)
         {
             if(!ModelState.IsValid)
@@ -39,7 +38,7 @@ namespace Manero_Backend.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Route("~/v1/api/[controller]es")]
         public async Task<IActionResult> GetAllAsync()
         {
             try
@@ -52,8 +51,24 @@ namespace Manero_Backend.Controllers
             {
                 return StatusCode(500, "");
             }
-
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> RemoveAsync(WishSchema schema)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var userId = JwtToken.GetIdFromClaim(HttpContext);
+
+                return await _wishService.RemoveAsync(schema, userId);
+            }
+            catch (Exception e) //Ilogger
+            {
+                return StatusCode(500, "");
+            }
+        }
     }
 }

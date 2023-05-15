@@ -59,5 +59,7 @@ namespace Manero_Backend.Helpers.Factory
         {
             return new(errorObject);
         }
+
+        public static NoContentResult NoContent() => new();
     }
 }

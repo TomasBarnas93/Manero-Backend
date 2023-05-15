@@ -14,24 +14,21 @@ namespace Manero_Backend.Helpers.Repositories
             _context = context;
         }
 
+        public async Task<WishEntity> GetAsync(Guid productId, string userId)
+        {
+            return await _context.WishList.Where(x => x.AppUserId == userId && x.ProductId == productId).FirstOrDefaultAsync();
+        }
+
         public async Task<bool> ExistsAsync(Guid productId, string userId)
         {
             return await _context.WishList.Where(w => w.ProductId == productId && w.AppUserId == userId).FirstOrDefaultAsync() != null ? true : false;
         }
         
-       
+        public async Task DeleteAsync(WishEntity entity)
+        {
+            _context.WishList.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }
-
-/*
- 
-			return await _context.Products
-				.Include(x => x.TagProducts).ThenInclude(x => x.Tag)
-				.Include(x => x.Category)
-				.Include(x => x.ProductColors).ThenInclude(x => x.Color)
-				.Include(x => x.ProductSizes).ThenInclude(x => x.Size)
-				.Include(x => x.Reviews)
-				.Where(x => (x.Category.Id == option.CategoryId && x.TagProducts.Any(a => a.Tag.Id == option.TagId)) || (x.CategoryId == option.CategoryId) || (x.TagProducts.Any(a => a.Tag.Id == option.TagId))).Take(option.Count).ToListAsync();
- 
- */

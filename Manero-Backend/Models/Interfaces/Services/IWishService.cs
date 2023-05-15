@@ -5,6 +5,7 @@ namespace Manero_Backend.Models.Interfaces.Services
 {
     public interface IWishService
     {
+        public Task<IActionResult> RemoveAsync(Guid productId, string userId);
         public Task<IActionResult> GetAllAsync(string userId);
         public Task<IActionResult> AddAsync(WishSchema schema, string userId);
     }

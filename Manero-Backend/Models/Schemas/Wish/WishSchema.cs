@@ -13,5 +13,10 @@ namespace Manero_Backend.Models.Schemas.Wish
                 ProductId = schema.ProductId
             };
         }
+
+        public static implicit operator Guid(WishSchema schema)
+        {
+            return schema.ProductId;
+        }
     }
 }
