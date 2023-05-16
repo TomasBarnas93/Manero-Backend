@@ -32,7 +32,7 @@ builder.Services.AddScoped<IProductColorRepository, ProductColorRepository>();
 builder.Services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
 builder.Services.AddScoped<IWishRepository, WishRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
-
+builder.Services.AddScoped<IPaymentDetailRepository, PaymentDetailRepository>();
 
 //Services
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -46,7 +46,7 @@ builder.Services.AddScoped<IProductColorService, ProductColorService>();
 builder.Services.AddScoped<IProductSizeService, ProductSizeService>();
 builder.Services.AddScoped<IWishService, WishService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
-
+builder.Services.AddScoped<IPaymentDetailService, PaymentDetailService>();
 
 //Identity and Authorization
 builder.Services.AddIdentity<AppUser, IdentityRole>(x =>

@@ -22,6 +22,9 @@ namespace Manero_Backend.Controllers
 		[HttpGet("id/{id}")]
 		public async Task<IActionResult> GetById(Guid id)
 		{
+			//User.Identity.IsAuthenticated
+
+
 			if (!ModelState.IsValid)
 				return BadRequest("");
 

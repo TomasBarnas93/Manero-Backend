@@ -110,10 +110,10 @@ public class JwtToken : IJwtToken
             var claimsPrincipal = new JwtSecurityTokenHandler()
                 .ValidateToken(jwt, validationParameters, out var rawValidatedToken);
 
-            long exp = long.Parse(claimsPrincipal.Claims.FirstOrDefault(x => x.Type == "exp").Value);
+            //long exp = long.Parse(claimsPrincipal.Claims.FirstOrDefault(x => x.Type == "exp").Value);
 
-            if (exp < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
-                return false;
+            //if (exp < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+            //    return false;
             
             return true;
             // Or, you can return the ClaimsPrincipal
