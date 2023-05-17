@@ -22,19 +22,17 @@ namespace Manero_Backend.Controllers
 		[HttpGet("id/{id}")]
 		public async Task<IActionResult> GetById(Guid id)
 		{
-			//User.Identity.IsAuthenticated
-
-
 			if (!ModelState.IsValid)
 				return BadRequest("");
 
 			try
 			{
-                var userId = JwtToken.GetIdFromClaim(HttpContext);
+				string userId = null;
+				if (User.Identity.IsAuthenticated)
+                    userId = JwtToken.GetIdFromClaim(HttpContext);
+       
 
-
-
-                return await _productService.GetByGuid(id);
+                return await _productService.GetByGuid(id, userId);
 			}
 			catch(Exception e)//ilogger
 			{
@@ -43,7 +41,7 @@ namespace Manero_Backend.Controllers
 		}
 
 
-		[HttpPost("options")]
+		[HttpGet("options")]
 		public async Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema)
 		{
 			if (!ModelState.IsValid)
@@ -51,7 +49,12 @@ namespace Manero_Backend.Controllers
 
 			try
 			{
-				return await _productService.GetByOptions(schema);
+                string userId = null;
+                if (User.Identity.IsAuthenticated)
+                    userId = JwtToken.GetIdFromClaim(HttpContext);
+
+
+                return await _productService.GetByOptions(schema, userId);
 			}
 			catch(Exception e) //Log
 			{

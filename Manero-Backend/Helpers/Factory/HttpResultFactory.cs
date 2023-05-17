@@ -25,12 +25,12 @@ namespace Manero_Backend.Helpers.Factory
             return new();
         }
 
-        public static BadRequestObjectResult BadRequest(object? errorObject) 
-        { 
+        public static BadRequestObjectResult BadRequest(object? errorObject)
+        {
             return new(errorObject);
         }
 
-        public static UnauthorizedResult Unauthorized() 
+        public static UnauthorizedResult Unauthorized()
         {
             return new();
         }
@@ -61,5 +61,14 @@ namespace Manero_Backend.Helpers.Factory
         }
 
         public static NoContentResult NoContent() => new();
+
+        public static StatusCodeResult StatusCode(int statusCode) => new(statusCode);
+
+        public static ObjectResult StatusCode(int statusCode, object? value)
+        {
+            return new ObjectResult(value) { StatusCode = statusCode };
+        }
+        
+        public static ForbidResult Forbid() => new();
     }
 }

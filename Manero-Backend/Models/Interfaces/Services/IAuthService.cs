@@ -16,4 +16,6 @@ public interface IAuthService
     public Task<IActionResult> Test(string jwtToken);
     Task<bool> DeleteAsync(Guid id);
     Task<IEnumerable<AppUser>> GetAllAsync();
+    public Task<IActionResult> SetPhoneNumberAsync(string userId, string phoneNumber);
+    public Task<IActionResult> ValidatePhoneNumber(string userId, string code);
 }

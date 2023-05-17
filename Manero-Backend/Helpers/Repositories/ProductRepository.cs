@@ -45,6 +45,7 @@ namespace Manero_Backend.Repositories
 				.Include(x => x.ProductColors).ThenInclude(x => x.Color)
 				.Include(x => x.ProductSizes).ThenInclude(x => x.Size)
 				.Include(x => x.Reviews)
+				.Include(x => x.WishList)
 				.Where(x => (x.Category.Id == option.CategoryId && x.TagProducts.Any(a => a.Tag.Id == option.TagId)) || (x.CategoryId == option.CategoryId) || (x.TagProducts.Any(a => a.Tag.Id == option.TagId))).Take(option.Count).ToListAsync();
         }
 

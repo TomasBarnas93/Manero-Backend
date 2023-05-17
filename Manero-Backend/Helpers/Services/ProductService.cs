@@ -27,8 +27,8 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 	private readonly ITagProductService _tagProductService;
 	private readonly IProductColorService _productColorService;
 	private readonly IProductSizeService _productSizeService;
-
-    public ProductService(ManeroDbContext dbContext, IProductRepository baseRepository, ITagService tagService, ICategoryService categoryService, IReviewService reviewService, ITagProductService tagProductService, IProductColorService productColorService, IProductSizeService productSizeService) : base(dbContext, baseRepository)
+	private readonly IWishService _wishService;
+    public ProductService(ManeroDbContext dbContext, IProductRepository baseRepository, ITagService tagService, ICategoryService categoryService, IReviewService reviewService, ITagProductService tagProductService, IProductColorService productColorService, IProductSizeService productSizeService, IWishService wishService) : base(dbContext, baseRepository)
 
     {
         _productRepository = baseRepository;
@@ -38,21 +38,23 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
         _tagProductService = tagProductService;
         _productColorService = productColorService;
         _productSizeService = productSizeService;
+		_wishService = wishService;
     }
 
 
-	public async Task<IActionResult> GetByGuid(Guid guid)
+	public async Task<IActionResult> GetByGuid(Guid guid, string userId)
 	{
 		ProductEntity entity = await _productRepository.GetByGuid(guid);
 		if (entity == null)
 			return HttpResultFactory.NotFound("");
 
-      
+		var productDto = (ProductDto)entity;
+		productDto.Liked = await _wishService.ExistsAsync(guid, userId);
 
-        return  HttpResultFactory.Ok((ProductDto)entity);
+        return  HttpResultFactory.Ok(productDto);
 	}
 
-    public async Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema)
+    public async Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema, string userId)
     {
 		List<object> result = new List<object>();
 
@@ -74,7 +76,12 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
                 }
             }
 
-            result.Add(new { Option = productOption, Result = (await _productRepository.GetByOption(productOption)).Select(x => (ProductMinDto)x), ErrorMessage = string.Empty });
+            result.Add(new { Option = productOption, Result = (await _productRepository.GetByOption(productOption)).Select(x => 
+			{
+				var productMinDto = (ProductMinDto)x;
+				productMinDto.Liked = x.WishList.Where(y => y.AppUserId == userId && y.ProductId == x.Id).FirstOrDefault() != null;
+                return productMinDto;
+            }), ErrorMessage = string.Empty });
         }
 
 		return HttpResultFactory.Ok(result);

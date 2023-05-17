@@ -15,6 +15,8 @@ namespace Manero_Backend.Models.Dtos.Product
         public decimal Price { get; set; }
         public int ReviewCount { get; set; }
 
+        public bool Liked { get; set; }
+
         public IEnumerable<TagEntity> Tags { get; set; } = null!;
         public CategoryEntity Category { get; set; } = null!;
         public IEnumerable<ColorEntity> Colors { get; set; } = null!;

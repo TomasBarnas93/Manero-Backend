@@ -54,7 +54,54 @@ namespace Manero_Backend.Controllers
                 return StatusCode(500,"");
             }
         }
-        
+
+
+        [HttpPost("getcode")]
+        [Authorize]
+        public async Task<IActionResult> GetCode(PhoneNumberSchema schema)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("");
+
+            try
+            {
+                //Send sms with code add later.
+                
+
+                //Set phone number.
+                var userId = JwtToken.GetIdFromClaim(HttpContext);
+
+                return await _authService.SetPhoneNumberAsync(userId, schema);
+            }
+            catch (Exception e) //Ilogger
+            {
+                return StatusCode(500, "");
+            }
+        }
+
+        [HttpPost("validatecode")]
+        [Authorize]
+        public async Task<IActionResult> ValidateOtp(CodeSchema schema)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("");
+
+            try
+            {
+                var userId = JwtToken.GetIdFromClaim(HttpContext);
+
+                return await _authService.ValidatePhoneNumber(userId, schema); 
+            }
+            catch (Exception e) //Ilogger
+            {
+                return StatusCode(500, "");
+            }
+
+        }
+
+
+
+        [Obsolete("May not work as intended. DO NO USE !")]
         //You dont need to use this to logout. You can just delete the token from the client side.
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
@@ -69,6 +116,7 @@ namespace Manero_Backend.Controllers
             }
         }
 
+        [Obsolete("May not work as intended. DO NO USE !")]
         [HttpGet("test")]
         public async Task<IActionResult> Test()
         {

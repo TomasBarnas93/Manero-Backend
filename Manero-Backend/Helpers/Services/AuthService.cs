@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.WebRequestMethods;
 
 
 namespace Manero_Backend.Helpers.Services;
@@ -42,6 +43,34 @@ public class AuthService : IAuthService
 
         return HttpResultFactory.Ok();
         //return HttpResultFactory.Ok(_jwtToken.Verify(jwtToken));
+    }
+
+    public async Task<IActionResult> SetPhoneNumberAsync(string userId, string phoneNumber)
+    {
+        AppUser user = await _userManager.FindByIdAsync(userId);
+
+        if (user.PhoneNumberConfirmed)
+            return HttpResultFactory.Forbid();
+
+
+        return (await _userManager.SetPhoneNumberAsync(user, phoneNumber)).Succeeded ? HttpResultFactory.Ok("") : HttpResultFactory.StatusCode(500, "");
+    }
+
+    public async Task<IActionResult> ValidatePhoneNumber(string userId, string code)
+    {
+        AppUser user = await _userManager.FindByIdAsync(userId);
+
+        if (user.PhoneNumberConfirmed)
+            return HttpResultFactory.Forbid();
+
+        if (user.Otp != code)
+            return HttpResultFactory.Unauthorized("");
+
+        user.PhoneNumberConfirmed = true;
+
+        await _userManager.UpdateAsync(user);
+
+        return HttpResultFactory.NoContent();
     }
 
 

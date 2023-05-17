@@ -11,9 +11,9 @@ namespace Manero_Backend.Models.Interfaces.Services;
 public interface IProductService: IBaseService<ProductRequest, ProductResponse, ProductEntity> 
 {
 
-    public Task<IActionResult> GetByGuid(Guid guid);
-    Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema);
 
+    Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema, string userId);
+    public Task<IActionResult> GetByGuid(Guid guid, string userId);
 
 
     Task<ProductEntity> CreateAsync(ProductSchema schema);

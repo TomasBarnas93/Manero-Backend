@@ -38,7 +38,12 @@ namespace Manero_Backend.Helpers.Services
 
         public async Task<IActionResult> GetAllAsync(string userId)
         {
-            return HttpResultFactory.Ok((await _productRepository.GetWishListAsync(userId)).Select(x => (ProductMinDto)x));
+            return HttpResultFactory.Ok((await _productRepository.GetWishListAsync(userId)).Select(x => 
+            {
+                var productMinDto = (ProductMinDto)x;
+                productMinDto.Liked = true;
+                return productMinDto;
+            }));
         }
 
         public async Task<IActionResult> RemoveAsync(Guid productId, string userId)
@@ -50,6 +55,11 @@ namespace Manero_Backend.Helpers.Services
             await _wishRepository.RemoveAsync(entity);
 
             return HttpResultFactory.NoContent();
+        }
+
+        public async Task<bool> ExistsAsync(Guid productId, string userId)
+        {
+            return await _wishRepository.ExistsAsync(productId, userId);
         }
     }
 }

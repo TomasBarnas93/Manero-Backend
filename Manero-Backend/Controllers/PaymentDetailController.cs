@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/[controller]")]
     [ApiController]
     [Authorize]
     public class PaymentDetailController : ControllerBase
@@ -58,7 +58,7 @@ namespace Manero_Backend.Controllers
         }
 
         [HttpGet]
-        [Route("~/v1/api/[controller]es")]
+        [Route("~/v1/api/[controller]s")]
         public async Task<IActionResult> GetAllAsync()
         {
             try
