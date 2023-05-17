@@ -17,6 +17,13 @@ public class CategoryService : BaseService<CategoryRequest, CategoryResponse, Ca
         _categoryRepository = baseRepository;
     }
 
+
+    public async Task<bool> ExistsAsync(Guid categoryId)
+    {
+        return await _categoryRepository.GetByIdAsync(categoryId) != null ? true : false;
+    }
+
+
     public async Task<CategoryEntity> GetOrCreateAsync(CategoryRequest entityCategory)
     {
         var category = await _categoryRepository
@@ -30,7 +37,6 @@ public class CategoryService : BaseService<CategoryRequest, CategoryResponse, Ca
         return (await _categoryRepository.SearchSingleAsync(x => x.Name == response.Name))!;
 
     }
-    
     private async Task<CategoryResponse> CheckIfValidCategoryAsync(CategoryRequest entityCategory)
     {
         foreach (var category in Enum.GetValues(typeof(CategoryEnum)))

@@ -1,6 +1,7 @@
 using Manero_Backend.Contexts;
 using Manero_Backend.Helpers.Enums;
 using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Helpers.Repositories;
 using Manero_Backend.Models.Dtos.Tag;
 using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
@@ -16,8 +17,13 @@ public class TagService : BaseService<TagRequest, TagResponse, TagEntity>, ITagS
     {
         _tagRepository = baseRepository;
     }
-    
-    
+
+    public async Task<bool> ExistsAsync(Guid tagId)
+    {
+        return await _tagRepository.GetByIdAsync(tagId) != null ? true : false;
+    }
+
+
     public async Task<TagEntity> GetOrCreateAsync(TagRequest entityTag)
     {
         var tag = await _tagRepository.SearchSingleAsync(x=>x.Name.ToLower() == entityTag.Name.ToLower());

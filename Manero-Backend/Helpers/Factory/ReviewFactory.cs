@@ -9,8 +9,8 @@ public class ReviewFactory
     {
         return new ReviewEntity()
         {
-            StarRating = review.StarRating,
-            Description = review.Description,
+            //StarRating = review.StarRating,
+            //Description = review.Description,
         };
     }
 
@@ -19,8 +19,8 @@ public class ReviewFactory
         return new ReviewResponse
         {
             Id = response.Id,
-            StarRating = response.StarRating,
-            Description = response.Description,
+            //StarRating = response.StarRating,
+            //Description = response.Description,
         };
     }
 }

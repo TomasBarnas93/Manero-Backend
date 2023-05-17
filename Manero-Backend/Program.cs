@@ -11,23 +11,28 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Manero_Backend.Helpers.JWT;
-
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ManeroDbContext>
-    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroStoreDB")));
-
+    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("DevTest")));
 
 //Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-
+builder.Services.AddScoped<ITagProductRepository, TagProductRepository>();
+builder.Services.AddScoped<IProductColorRepository, ProductColorRepository>();  
+builder.Services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
+builder.Services.AddScoped<IWishRepository, WishRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IPaymentDetailRepository, PaymentDetailRepository>();
 
 //Services
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -36,7 +41,12 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtToken, JwtToken>();
-
+builder.Services.AddScoped<ITagProductService, TagProductService>();
+builder.Services.AddScoped<IProductColorService, ProductColorService>();
+builder.Services.AddScoped<IProductSizeService, ProductSizeService>();
+builder.Services.AddScoped<IWishService, WishService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IPaymentDetailService, PaymentDetailService>();
 
 //Identity and Authorization
 builder.Services.AddIdentity<AppUser, IdentityRole>(x =>
