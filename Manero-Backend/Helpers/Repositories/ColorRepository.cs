@@ -4,14 +4,13 @@ using Manero_Backend.Models.Interfaces.Repositories;
 
 namespace Manero_Backend.Helpers.Repositories
 {
-    public class ProductColorRepository : BaseRepository<ProductColorEntity>, IProductColorRepository
+    public class ColorRepository : BaseRepository<ColorEntity>, IColorRepository
     {
         private readonly ManeroDbContext _context;
-        public ProductColorRepository(ManeroDbContext dbContext) : base(dbContext)
-        {
-            _context = dbContext;
-        }
 
-       
+        public ColorRepository(ManeroDbContext context) : base(context)
+        {
+            _context = context;
+        }
     }
 }

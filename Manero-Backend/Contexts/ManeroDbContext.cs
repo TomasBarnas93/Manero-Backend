@@ -62,6 +62,8 @@ namespace Manero_Backend.Contexts
 
 				promoCode.Property(pc => pc.Discount)
 					.HasColumnType("decimal(3,2)");
+				promoCode.HasIndex(x => x.Code)
+						.IsUnique();
 			});
 
 			modelBuilder.Entity<CompanyEntity>(company =>

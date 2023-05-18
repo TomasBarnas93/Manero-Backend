@@ -9,47 +9,12 @@ using Manero_Backend.Models.Interfaces.Services;
 
 namespace Manero_Backend.Helpers.Services;
 
-public class TagService : BaseService<TagRequest, TagResponse, TagEntity>, ITagService
+public class TagService : BaseService<TagEntity>, ITagService
 {
     private readonly ITagRepository _tagRepository;
 
-    public TagService(ManeroDbContext dbContext, ITagRepository baseRepository) : base(dbContext, baseRepository)
+    public TagService(ITagRepository tagRepository) : base(tagRepository)
     {
-        _tagRepository = baseRepository;
+        _tagRepository = tagRepository;
     }
-
-    public async Task<bool> ExistsAsync(Guid tagId)
-    {
-        return await _tagRepository.GetByIdAsync(tagId) != null ? true : false;
-    }
-
-
-    public async Task<TagEntity> GetOrCreateAsync(TagRequest entityTag)
-    {
-        var tag = await _tagRepository.SearchSingleAsync(x=>x.Name.ToLower() == entityTag.Name.ToLower());
-        
-        if (tag is not null)
-            return tag;
-        
-        
-        //Only does this if the tag is not null
-        var response = await CheckIfValidCategoryAsync(entityTag);
-        
-        return _tagRepository.SearchSingleAsync(x=>x.Name == response.Name).Result!;
-    }
-
-    private async Task<TagResponse> CheckIfValidCategoryAsync(TagRequest entityTag)
-    {
-        foreach (var tag in Enum.GetNames(typeof(TagEnum)))
-        {
-            if (tag.ToLower() == entityTag.Name.ToLower())
-                return await _tagRepository.CreateAsync(TagFactory.CreateEntity(tag.ToUpper()));
-        }
-        
-        return await _tagRepository.SearchSingleAsync(x=>x.Name == TagEnum.NONE.ToString()) ??
-               await _tagRepository.CreateAsync(TagFactory.CreateEntity(TagEnum.NONE.ToString()));
-        
-    }
-
-
 }

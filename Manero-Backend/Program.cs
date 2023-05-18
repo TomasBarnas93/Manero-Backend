@@ -33,6 +33,12 @@ builder.Services.AddScoped<IProductSizeRepository, ProductSizeRepository>();
 builder.Services.AddScoped<IWishRepository, WishRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IPaymentDetailRepository, PaymentDetailRepository>();
+builder.Services.AddScoped<ISizeRepository, SizeRepository>();
+builder.Services.AddScoped<IColorRepository, ColorRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
+builder.Services.AddScoped<IUserPromoCodeRepository, UserPromoCodeRepository>();
 
 //Services
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -47,6 +53,12 @@ builder.Services.AddScoped<IProductSizeService, ProductSizeService>();
 builder.Services.AddScoped<IWishService, WishService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IPaymentDetailService, PaymentDetailService>();
+builder.Services.AddScoped<ISizeService, SizeService>();
+builder.Services.AddScoped<IColorService, ColorService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
+builder.Services.AddScoped<IUserPromoCodeService, UserPromoCodeService>();
 
 //Identity and Authorization
 builder.Services.AddIdentity<AppUser, IdentityRole>(x =>

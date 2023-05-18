@@ -13,10 +13,5 @@ namespace Manero_Backend.Helpers.Repositories
             _context = dbContext;
         }
 
-        public async Task AddRangedAsync(ICollection<ProductSizeEntity> entities)
-        {
-            await _context.ProductSizes.AddRangeAsync(entities);
-            await _context.SaveChangesAsync();
-        }
     }
 }

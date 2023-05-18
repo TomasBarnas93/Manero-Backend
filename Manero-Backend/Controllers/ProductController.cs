@@ -4,7 +4,9 @@ using Manero_Backend.Helpers.Services;
 using Manero_Backend.Models.Dtos.Product;
 using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Models.Schemas.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace Manero_Backend.Controllers
 {
@@ -58,11 +60,12 @@ namespace Manero_Backend.Controllers
 			}
 			catch(Exception e) //Log
 			{
-				return StatusCode(500, "");
-			}
+                return StatusCode(500, "");
+            }
 		}
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateAsync(ProductSchema schema)
         {
             if (!ModelState.IsValid)
@@ -71,10 +74,8 @@ namespace Manero_Backend.Controllers
 
             try
             {
-				await _productService.CreateAsync(schema);
 
-
-                return Created("","");
+                return await _productService.CreateAsync(schema);
             }
             catch (Exception e) //Log
             {
@@ -85,102 +86,6 @@ namespace Manero_Backend.Controllers
 
 
         [Obsolete("May not work as intended. DO NO USE !")]
-        [HttpGet]
-		public async Task<IEnumerable<ProductResponse>> GetAllAsync()
-		{
-			return await _productService.GetAllAsync();
-		}
-
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-        [HttpGet("{id}")]
-		public async Task<IActionResult> GetByIdAsync(Guid id)
-		{
-			var result = await _productService.GetByIdAsync(id);
-
-			if (result is null)
-				return NotFound();
-
-			return Ok(result);
-		}
-
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-
-        [HttpPut("{id}")]
-		public async Task<IActionResult> UpdateAsync(Guid id, ProductRequest request)
-		{
-			if (!ModelState.IsValid)
-				return BadRequest();
-
-			var result = await _productService.UpdateAsync(id, request);
-
-			if (result is null)
-				return NotFound();
-
-			return Ok(result);
-		}
-
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-        [HttpDelete("{id}")]
-		public async Task<IActionResult> RemoveAsync(Guid id)
-		{
-			var result = await _productService.RemoveAsync(id);
-
-			if (!result)
-				return NotFound();
-
-			return Ok();
-		}
-
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-
-        [HttpGet("tag/{tag}")]
-		public async Task<IActionResult> GetByTagAsync(string tag)
-		{
-			var result = await _productService.GetByTagAsync(TagFactory.CreateRequest(tag));
-
-			if (result is null)
-				return NoContent();
-
-
-			return Ok(result);
-		}
-
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-
-        [HttpGet("category/{category}")]
-		public async Task<IActionResult> GetByCategoryAsync(string category)
-		{
-			var result = await _productService.GetByCategoryAsync(CategoryFactory.CreateRequest(category));
-
-			if (result == null!)
-				return NoContent();
-
-
-			return Ok(result);
-		}
-
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-
-        [HttpGet("reviews/{id}")]
-		public async Task<IActionResult> GetReviewsAsync(Guid id)
-		{
-			var result = await _productService.GetReviewsAsync(id);
-
-			if (result == null!)
-				return NoContent();
-			
-			return Ok(result);
-		}
-
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-
         [HttpGet("test")]
 		public async Task<IActionResult> TestAsync()
 		{

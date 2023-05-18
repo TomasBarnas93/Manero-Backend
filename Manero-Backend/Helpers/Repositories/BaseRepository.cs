@@ -110,5 +110,26 @@ namespace Manero_Backend.Helpers.Repositories
             return entity;
         }
         #endregion
+
+        public async Task<bool> ExistsAsync(Guid id)
+        {
+            return await _dbContext.Set<TEntity>().FindAsync(id) != null;
+        }
+
+        public async Task<int> CountAsync(Expression<Func<TEntity,bool>> predicate)
+        {
+            return await _dbContext.Set<TEntity>().Where(predicate).CountAsync();
+        }
+
+        public async Task AddRangedAsync(ICollection<TEntity> entities)
+        {
+            await _dbContext.Set<TEntity>().AddRangeAsync(entities);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return (await _dbContext.Set<TEntity>().FirstOrDefaultAsync(predicate))!;
+        }
     }
 }

@@ -4,6 +4,6 @@ namespace Manero_Backend.Models.Interfaces.Repositories
 {
     public interface ITagProductRepository : IBaseRepository<TagProductEntity>
     {
-        public Task AddRangedAsync(ICollection<TagProductEntity> entities);
+
     }
 }

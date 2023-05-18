@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Helpers.Services
 {
-    public class WishService : IWishService
+    public class WishService : BaseService<WishEntity>,IWishService
     {
         private readonly IWishRepository _wishRepository;
         private readonly IProductRepository _productRepository;
-        public WishService(IWishRepository repository, IProductRepository productRepository)
+        public WishService(IWishRepository wishRepository, IProductRepository productRepository) : base(wishRepository)
         {
-            _wishRepository = repository;
+            _wishRepository = wishRepository;
             _productRepository = productRepository;
         }
 

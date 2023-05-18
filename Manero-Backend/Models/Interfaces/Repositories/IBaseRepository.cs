@@ -11,7 +11,9 @@ namespace Manero_Backend.Models.Interfaces.Repositories
         Task<TEntity?> GetByIdAsync(Guid id);
         Task<TEntity?> SearchSingleAsync(Expression<Func<TEntity, bool>> predicate);
         Task<IEnumerable<TEntity?>> SearchAsync(Expression<Func<TEntity, bool>> predicate);
-
-       
+        public Task<bool> ExistsAsync(Guid id);
+        public Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate);
+        public Task AddRangedAsync(ICollection<TEntity> entities);
+        public Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate);
     }
 }

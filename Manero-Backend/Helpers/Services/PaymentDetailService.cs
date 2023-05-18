@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Helpers.Services
 {
-    public class PaymentDetailService : IPaymentDetailService
+    public class PaymentDetailService : BaseService<PaymentDetailEntity>, IPaymentDetailService
     {
         private readonly IPaymentDetailRepository _paymentDetailRepository;
 
-        public PaymentDetailService(IPaymentDetailRepository paymentDetailRepository)
+        public PaymentDetailService(IPaymentDetailRepository paymentDetailRepository) : base(paymentDetailRepository)
         {
             _paymentDetailRepository = paymentDetailRepository;
         }

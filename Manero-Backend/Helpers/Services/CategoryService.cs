@@ -8,11 +8,11 @@ using Manero_Backend.Models.Interfaces.Services;
 
 namespace Manero_Backend.Helpers.Services;
 
-public class CategoryService : BaseService<CategoryRequest, CategoryResponse, CategoryEntity>, ICategoryService
+public class CategoryService : BaseService<CategoryEntity>, ICategoryService
 {
     private readonly ICategoryRepository _categoryRepository;
 
-    public CategoryService(ICategoryRepository baseRepository, ManeroDbContext context) : base(context, baseRepository)
+    public CategoryService(ICategoryRepository baseRepository) : base(baseRepository)
     {
         _categoryRepository = baseRepository;
     }

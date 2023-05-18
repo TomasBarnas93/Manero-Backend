@@ -1,4 +1,6 @@
-﻿namespace Manero_Backend.Models.Entities
+﻿using Manero_Backend.Models.Dtos.PromoCode;
+
+namespace Manero_Backend.Models.Entities
 {
     public class PromoCodeEntity : BaseEntity
     {
@@ -10,5 +12,18 @@
 
         public ICollection<UserPromoCodeEntity> UserPromoCodes { get; set; } //M:M
         public ICollection<OrderEntity> Orders { get; set; } //M:1
+
+        public static implicit operator PromoCodeDto(PromoCodeEntity entity)
+        {
+            return new PromoCodeDto()
+            {
+                Id = entity.Id,
+                Company = new CompanyEntity() { Id = entity.Company.Id, Name = entity.Company.Name },
+                Discount = entity.Discount,
+                ValidToUnix = entity.ValidToUnix,
+                Code = entity.Code,
+                Used = entity.UserPromoCodes != null ? entity.UserPromoCodes.Where(x => x.PromoCodeId == entity.Id).First().Used : false
+            };
+        }
     }
 }

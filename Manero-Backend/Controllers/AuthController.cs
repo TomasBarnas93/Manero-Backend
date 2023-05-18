@@ -101,43 +101,6 @@ namespace Manero_Backend.Controllers
 
 
 
-        [Obsolete("May not work as intended. DO NO USE !")]
-        //You dont need to use this to logout. You can just delete the token from the client side.
-        [HttpPost("Logout")]
-        public async Task<IActionResult> Logout()
-        {
-            try
-            {
-                return await _authService.LogoutAsync();
-            }
-            catch(Exception e) //Ilogger
-            {
-                return StatusCode(500, "");
-            }
-        }
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-        [HttpGet("test")]
-        public async Task<IActionResult> Test()
-        {
-           
-            return Ok();
-        }
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            await _authService.DeleteAsync(id);
-            return Ok();
-        }
-
-        [Obsolete("May not work as intended. DO NO USE !")]
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
-        {
-            return Ok(await _authService.GetAllAsync());
-        }
 
     }
 }
