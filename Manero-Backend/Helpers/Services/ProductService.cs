@@ -16,7 +16,7 @@ using System.Formats.Asn1;
 
 namespace Manero_Backend.Helpers.Services;
 
-public class ProductService : BaseService<ProductRequest, ProductResponse, ProductEntity>, IProductService
+public class ProductService : BaseService<ProductEntity>, IProductService
 
 {
     private readonly IProductRepository _productRepository;
@@ -28,8 +28,10 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 	private readonly IProductColorService _productColorService;
 	private readonly IProductSizeService _productSizeService;
 	private readonly IWishService _wishService;
-    public ProductService(ManeroDbContext dbContext, IProductRepository baseRepository, ITagService tagService, ICategoryService categoryService, IReviewService reviewService, ITagProductService tagProductService, IProductColorService productColorService, IProductSizeService productSizeService, IWishService wishService) : base(dbContext, baseRepository)
-
+    private readonly ISizeService _sizeService;
+    private readonly IColorService _colorService;
+    private readonly ICompanyService _companyService;
+    public ProductService(IProductRepository baseRepository, ITagService tagService, ICategoryService categoryService, IReviewService reviewService, ITagProductService tagProductService, IProductColorService productColorService, IProductSizeService productSizeService, IWishService wishService, ISizeService sizeService, IColorService colorService, ICompanyService companyService) : base(baseRepository)
     {
         _productRepository = baseRepository;
         _tagService = tagService;
@@ -38,11 +40,14 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
         _tagProductService = tagProductService;
         _productColorService = productColorService;
         _productSizeService = productSizeService;
-		_wishService = wishService;
+        _wishService = wishService;
+        _sizeService = sizeService;
+        _colorService = colorService;
+        _companyService = companyService;
     }
 
 
-	public async Task<IActionResult> GetByGuid(Guid guid, string userId)
+    public async Task<IActionResult> GetByGuid(Guid guid, string userId)
 	{
 		ProductEntity entity = await _productRepository.GetByGuid(guid);
 		if (entity == null)
@@ -87,105 +92,35 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 		return HttpResultFactory.Ok(result);
     }
 
-	
 
-
-	public async Task<ProductEntity> CreateAsync(ProductSchema schema)
+	public async Task<IActionResult> CreateAsync(ProductSchema schema)
 	{
-		
+
+		if (await _tagService.CountAsync(x => schema.TagIds.Contains(x.Id)) != schema.TagIds.Count)
+			return HttpResultFactory.BadRequest("Invalid id/s.");
+
+        if (await _sizeService.CountAsync(x => schema.SizeIds.Contains(x.Id)) != schema.SizeIds.Count)
+            return HttpResultFactory.BadRequest("Invalid id/s.");
+
+        if(await _colorService.CountAsync(x => schema.ColorIds.Contains(x.Id)) != schema.ColorIds.Count)
+            return HttpResultFactory.BadRequest("Invalid id/s.");
+
+        if(!await _categoryService.ExistsAsync(schema.CategoryId))
+            return HttpResultFactory.BadRequest("Invalid id/s.");
+
+        if(!await _companyService.ExistsAsync(schema.CompanyId))
+            return HttpResultFactory.BadRequest("Invalid id/s.");
+
+
         ProductEntity entity = await _productRepository.CreateAsync(schema);
-
-		await _tagProductService.AddRangedAsync(schema.TagIds.Select(x => new TagProductEntity() { TagId = x, ProductId = entity.Id }).ToList());
-		await _productColorService.AddRangedAsync(schema.ColorIds.Select(x => new ProductColorEntity() { ColorId = x, ProductId = entity.Id }).ToList());
-
-		foreach (var i in schema.SizeIds)
-			Console.WriteLine(i);
-
+        await _tagProductService.AddRangedAsync(schema.TagIds.Select(x => new TagProductEntity() { TagId = x, ProductId = entity.Id }).ToList());
+		
+        await _productColorService.AddRangedAsync(schema.ColorIds.Select(x => new ProductColorEntity() { ColorId = x, ProductId = entity.Id }).ToList());
 		await _productSizeService.AddRangedAsync(schema.SizeIds.Select(x => new ProductSizeEntity() { SizeId = x, ProductId = entity.Id}).ToList());
 
 
-		return null;
+		return HttpResultFactory.Created("", "");
 	}
-
-
-	
-
-    public override async Task<ProductResponse?> UpdateAsync(Guid id, ProductRequest entity)
-	{
-		var tempEntity = await _productRepository.GetByIdAsync(id);
-
-		if (tempEntity is null)
-			return null;
-
-		tempEntity = await AdjustModel(tempEntity, entity);
-
-		return await _productRepository.UpdateAsync(tempEntity);
-
-	}
-	
-	public async Task<IEnumerable<ProductResponse?>> GetByTagAsync(TagRequest tag)
-	{
-		IEnumerable<ProductResponse> list = null;//await _productRepository.SearchAsync(x=>x.Tag.Name.ToLower() == tag.Name.ToLower());
-		
-		if (!list.Any())
-			return null!;
-		
-		return list.Adapt<IEnumerable<ProductResponse>>();
-	}
-
-	public async Task<IEnumerable<ProductResponse?>> GetByCategoryAsync(CategoryRequest createRequest)
-	{
-		var list = await _productRepository.SearchAsync
-			(x=>x.Category.Name.ToLower() == createRequest.Name.ToLower());
-
-		if (!list.Any())
-			return null!;
-		
-		
-		return list.Adapt<IEnumerable<ProductResponse>>();
-	}
-
-	public async Task<IEnumerable<ReviewResponse>> GetReviewsAsync(Guid id)
-	{
-		var list = await _reviewService.SearchAsync(x=>x.ProductId == id);
-		
-		if (!list.Any() || list == null!)
-			return null!;
-		
-		return list.Adapt<IEnumerable<ReviewResponse>>();
-	}
-
-	private async Task<ProductEntity> AdjustModel(ProductEntity entity, ProductRequest request)
-	{
-		return null;
-		if(request.Name != "")
-			entity.Name = request.Name;
-		
-		if(request.Description != "")
-			entity.Description = request.Description;
-		
-		if(request.Color != "")
-			//entity.Color = request.Color;
-		
-		if(request.Size != "")
-			//request.Size = entity.Size;
-		
-		if(request.Price != 0)
-			entity.Price = request.Price;
-		
-		if(request.ImageUrl != "")
-			entity.ImageUrl = request.ImageUrl;
-		
-		if(request.Category != "")
-			entity.Category = await _categoryService.GetOrCreateAsync(CategoryFactory.CreateRequest(request.Category));
-		
-		if(request.Tag != "")
-			//entity.Tag = await _tagService.GetOrCreateAsync(TagFactory.CreateRequest(request.Tag));
-		
-		return null;
-	}
-
-
 
 
 

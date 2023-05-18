@@ -8,22 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Models.Interfaces.Services;
 
-public interface IProductService: IBaseService<ProductRequest, ProductResponse, ProductEntity> 
+public interface IProductService: IBaseService<ProductEntity> 
 {
-
-
-    Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema, string userId);
+    public Task<IActionResult> GetByOptions(IEnumerable<ProductOptionSchema> schema, string userId);
     public Task<IActionResult> GetByGuid(Guid guid, string userId);
+    public Task<IActionResult> CreateAsync(ProductSchema schema);
 
-
-    Task<ProductEntity> CreateAsync(ProductSchema schema);
-
-
-
-
-    Task<IEnumerable<ProductResponse?>> GetByTagAsync(TagRequest tag);
-    Task<IEnumerable<ProductResponse?>> GetByCategoryAsync(CategoryRequest createRequest);
-    Task<IEnumerable<ReviewResponse>> GetReviewsAsync(Guid id);
 
     public Task FillDataAsync();
 }

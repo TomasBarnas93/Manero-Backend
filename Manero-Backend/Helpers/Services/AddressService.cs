@@ -11,11 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Manero_Backend.Helpers.Services
 {
-    public class AddressService : IAddressService
+    public class AddressService : BaseService<AddressEntity>, IAddressService
     {
         private readonly IAddressRepository _addressRepository;
 
-        public AddressService(IAddressRepository addressRepository)
+        public AddressService(IAddressRepository addressRepository) : base(addressRepository) 
         {
             _addressRepository = addressRepository;
         }

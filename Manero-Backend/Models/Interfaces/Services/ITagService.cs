@@ -3,8 +3,7 @@ using Manero_Backend.Models.Entities;
 
 namespace Manero_Backend.Models.Interfaces.Services;
 
-public interface ITagService : IBaseService<TagRequest, TagResponse, TagEntity>
+public interface ITagService : IBaseService<TagEntity>
 {
-    public Task<bool> ExistsAsync(Guid tagId);
-    Task<TagEntity> GetOrCreateAsync(TagRequest entityTag);
+
 }

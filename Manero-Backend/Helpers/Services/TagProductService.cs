@@ -4,18 +4,13 @@ using Manero_Backend.Models.Interfaces.Services;
 
 namespace Manero_Backend.Helpers.Services
 {
-    public class TagProductService : ITagProductService
+    public class TagProductService : BaseService<TagProductEntity>, ITagProductService
     {
         private readonly ITagProductRepository _tagProductRepository;
 
-        public TagProductService(ITagProductRepository tagProductRepository)
+        public TagProductService(ITagProductRepository tagProductRepository) : base(tagProductRepository)
         {
             _tagProductRepository = tagProductRepository;
-        }
-
-        public async Task AddRangedAsync(ICollection<TagProductEntity> entities)
-        {
-            await _tagProductRepository.AddRangedAsync(entities);
         }
     }
 }

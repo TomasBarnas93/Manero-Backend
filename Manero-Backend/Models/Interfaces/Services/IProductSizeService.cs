@@ -2,8 +2,7 @@
 
 namespace Manero_Backend.Models.Interfaces.Services
 {
-    public interface IProductSizeService
+    public interface IProductSizeService : IBaseService<ProductSizeEntity>
     {
-        public Task AddRangedAsync(ICollection<ProductSizeEntity> entities);
     }
 }

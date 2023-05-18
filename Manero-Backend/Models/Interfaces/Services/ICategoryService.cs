@@ -3,7 +3,7 @@ using Manero_Backend.Models.Entities;
 
 namespace Manero_Backend.Models.Interfaces.Services;
 
-public interface ICategoryService : IBaseService<CategoryRequest, CategoryResponse, CategoryEntity> 
+public interface ICategoryService : IBaseService<CategoryEntity> 
 {
     public Task<bool> ExistsAsync(Guid categoryId);
 

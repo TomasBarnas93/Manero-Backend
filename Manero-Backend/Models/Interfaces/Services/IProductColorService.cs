@@ -2,8 +2,7 @@
 
 namespace Manero_Backend.Models.Interfaces.Services
 {
-    public interface IProductColorService
+    public interface IProductColorService : IBaseService<ProductColorEntity>
     {
-        public Task AddRangedAsync(ICollection<ProductColorEntity> entities);
     }
 }

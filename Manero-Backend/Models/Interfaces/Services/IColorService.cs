@@ -2,7 +2,7 @@
 
 namespace Manero_Backend.Models.Interfaces.Services
 {
-    public interface ITagProductService : IBaseService<TagProductEntity>
+    public interface IColorService : IBaseService<ColorEntity>
     {
     }
 }
