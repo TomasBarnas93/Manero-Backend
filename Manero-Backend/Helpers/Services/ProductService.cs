@@ -97,6 +97,10 @@ public class ProductService : BaseService<ProductRequest, ProductResponse, Produ
 
 		await _tagProductService.AddRangedAsync(schema.TagIds.Select(x => new TagProductEntity() { TagId = x, ProductId = entity.Id }).ToList());
 		await _productColorService.AddRangedAsync(schema.ColorIds.Select(x => new ProductColorEntity() { ColorId = x, ProductId = entity.Id }).ToList());
+
+		foreach (var i in schema.SizeIds)
+			Console.WriteLine(i);
+
 		await _productSizeService.AddRangedAsync(schema.SizeIds.Select(x => new ProductSizeEntity() { SizeId = x, ProductId = entity.Id}).ToList());
 
 
