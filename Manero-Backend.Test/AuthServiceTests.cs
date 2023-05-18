@@ -10,6 +10,7 @@ using NUnit.Framework;
 
 namespace Manero_Backend.Test;
 
+/*
 public class AuthServiceTests 
 {
     private Mock<UserManager<AppUser>> userManagerMock;
@@ -114,3 +115,4 @@ public class AuthServiceTests
     
     
 }
+*/

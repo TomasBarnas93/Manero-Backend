@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Manero_Backend.Migrations
 {
     [DbContext(typeof(ManeroDbContext))]
-    [Migration("20230512120240_2")]
-    partial class _2
+    [Migration("20230518112126_1")]
+    partial class _1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,9 @@ namespace Manero_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -65,6 +68,10 @@ namespace Manero_Backend.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Otp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -159,6 +166,10 @@ namespace Manero_Backend.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Hex")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -343,7 +354,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductColorEntity");
+                    b.ToTable("ProductColors");
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.ProductEntity", b =>
@@ -374,6 +385,8 @@ namespace Manero_Backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Products");
@@ -397,7 +410,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("ProductSizeEntity");
+                    b.ToTable("ProductSizes");
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.PromoCodeEntity", b =>
@@ -820,7 +833,7 @@ namespace Manero_Backend.Migrations
                 {
                     b.HasOne("Manero_Backend.Models.Entities.CategoryEntity", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CompanyId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
