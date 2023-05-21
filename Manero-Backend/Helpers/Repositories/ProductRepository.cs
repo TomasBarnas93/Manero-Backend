@@ -46,6 +46,7 @@ namespace Manero_Backend.Repositories
 				.Include(x => x.ProductSizes).ThenInclude(x => x.Size)
 				.Include(x => x.Reviews)
 				.Include(x => x.WishList)
+				.Include(x => x.Company)
 				.Where(x => (x.Category.Id == option.CategoryId && x.TagProducts.Any(a => a.Tag.Id == option.TagId)) || (x.CategoryId == option.CategoryId) || (x.TagProducts.Any(a => a.Tag.Id == option.TagId))).Take(option.Count).ToListAsync();
         }
 
@@ -60,36 +61,12 @@ namespace Manero_Backend.Repositories
         }
 
 
-        public async Task CreateAsync(ProductSchema schema)
-		{
-            //using await _context.Database.BeginTransactionAsync();
-            using var transaction = _context.Database.BeginTransaction();
-
-            try
-			{
-				ProductEntity entity = schema;
-				await _context.AddAsync(entity);
-				await _context.SaveChangesAsync();
-				
-                //await _context.Database.AddRangedAsync(schema.TagIds.Select(x => new TagProductEntity() { TagId = x, ProductId = entity.Id }).ToList());
-                //await _context.Database.AddRangedAsync(schema.ColorIds.Select(x => new ProductColorEntity() { ColorId = x, ProductId = entity.Id }).ToList());
-                //await _context.Database.AddRangedAsync(schema.SizeIds.Select(x => new ProductSizeEntity() { SizeId = x, ProductId = entity.Id }).ToList());
-
-
-                await _context.Database.CommitTransactionAsync();
-			}
-			catch(Exception e) //Ilogger
-			{
-
-				await _context.Database.RollbackTransactionAsync();
-			}
-			
-		}
+      
         public async Task FillDataAsync()
 		{
             List<TagEntity> tagEntities = new List<TagEntity>()
             {
-                //new TagEntity() { Name = "Featured" },
+                new TagEntity() { Name = "Featured" },
 				new TagEntity() { Name = "Popular"},
 				new TagEntity() { Name = "Best"},
 				new TagEntity() { Name = "New"},
@@ -110,12 +87,12 @@ namespace Manero_Backend.Repositories
 
 			List<OrderStatusTypeEntity> orderStatusTypeEntities = new List<OrderStatusTypeEntity>()
 			{ 
-				new OrderStatusTypeEntity() { Name = "Order Created" },
-				new OrderStatusTypeEntity() { Name = "Order Confirmed" },
-				new OrderStatusTypeEntity() { Name = "Order Shipping" },
-				new OrderStatusTypeEntity() { Name = "Order Delivering" },
-				new OrderStatusTypeEntity() { Name = "Receiving" },
-				new OrderStatusTypeEntity() { Name = "Cancelled" }
+				new OrderStatusTypeEntity() { Name = "Order Created", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on " },
+				new OrderStatusTypeEntity() { Name = "Order Confirmed", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on "},
+				new OrderStatusTypeEntity() { Name = "Order Shipping", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on " },
+				new OrderStatusTypeEntity() { Name = "Order Delivering", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on " },
+				new OrderStatusTypeEntity() { Name = "Receiving", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on "},
+				new OrderStatusTypeEntity() { Name = "Cancelled", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on "}
 			};
 
             List<ColorEntity> colorEntities = new List<ColorEntity>()

@@ -36,7 +36,8 @@ public class ProductEntity : BaseEntity
 			ReviewCount = entity.Reviews.Count,
 			ImageUrl = entity.ImageUrl,
 			Price = entity.Price,
-			Tags = entity.TagProducts.Select(x => new TagEntity() { Id = x.Tag.Id, Name = x.Tag.Name }).ToList(),
+            Company = new CompanyEntity() { Id = entity.Company.Id, Name = entity.Company.Name },
+            Tags = entity.TagProducts.Select(x => new TagEntity() { Id = x.Tag.Id, Name = x.Tag.Name }).ToList(),
 			Category = entity.Category,
 			Colors = entity.ProductColors.Select(x => new ColorEntity() { Id = x.Color.Id, Name = x.Color.Name, Hex = x.Color.Hex }).ToList(),
 			Sizes = entity.ProductSizes.Select(x => new SizeEntity() { Id = x.Size.Id, Name = x.Size.Name }).ToList()

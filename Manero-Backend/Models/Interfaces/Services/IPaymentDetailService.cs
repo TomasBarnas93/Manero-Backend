@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Models.Interfaces.Services
 {
-    public interface IPaymentDetailService
+    public interface IPaymentDetailService : IBaseService<PaymentDetailEntity>
     {
         public Task<IActionResult> CreateAsync(PaymentDetailEntity entity, string userId);
         public Task<IActionResult> RemoveAsync(Guid paymentDetailId, string userId);

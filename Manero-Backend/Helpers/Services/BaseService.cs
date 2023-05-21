@@ -1,3 +1,4 @@
+using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Interfaces.Services;
 using Mapster;
@@ -20,7 +21,10 @@ public class BaseService<TEntity> : IBaseService<TEntity> where  TEntity : class
     {
         return await _baseRepository.ExistsAsync(id);
     }
-
+    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await _baseRepository.ExistsAsync(predicate);
+    }
     public async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate)
     {
         return await _baseRepository.CountAsync(predicate);

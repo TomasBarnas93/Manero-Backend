@@ -17,6 +17,11 @@ namespace Manero_Backend.Models.Entities
         public PromoCodeEntity PromoCode { get; set; }
 
         public decimal TotalPrice { get; set; }
+        public string Comment { get; set; }
+
+        public bool Cancelled { get; set; }
+        public string CancelledMessage { get; set; }
+
 
         public ICollection<OrderProductEntity> OrderProducts { get; set; } //M:M
         public ICollection<OrderStatusEntity> OrderStatuses { get; set; } //M:M men jag tycer det är m:1

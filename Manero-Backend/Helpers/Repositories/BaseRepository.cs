@@ -70,18 +70,10 @@ namespace Manero_Backend.Helpers.Repositories
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
-            try
-            {
-                await _dbSet.AddAsync(entity);
-                await _dbContext.SaveChangesAsync();
-                
-                return entity;
-            }
-            catch (Exception ex) 
-            { 
-                Debug.WriteLine(ex.Message);
-                return null!;
-            }
+            await _dbSet.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+
+            return entity;
 
         }
 
@@ -114,6 +106,11 @@ namespace Manero_Backend.Helpers.Repositories
         public async Task<bool> ExistsAsync(Guid id)
         {
             return await _dbContext.Set<TEntity>().FindAsync(id) != null;
+        }
+
+        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await _dbContext.Set<TEntity>().Where(predicate).FirstOrDefaultAsync() != null;
         }
 
         public async Task<int> CountAsync(Expression<Func<TEntity,bool>> predicate)

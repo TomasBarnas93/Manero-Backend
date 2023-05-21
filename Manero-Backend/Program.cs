@@ -20,7 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ManeroDbContext>
-    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("ManeroStoreDB")));
+    (x => x.UseSqlServer(builder.Configuration.GetConnectionString("DevTest")));
 
 //Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -39,6 +39,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IUserPromoCodeRepository, UserPromoCodeRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 //Services
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -59,6 +60,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
 builder.Services.AddScoped<IUserPromoCodeService, UserPromoCodeService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
 
 //Identity and Authorization
 builder.Services.AddIdentity<AppUser, IdentityRole>(x =>

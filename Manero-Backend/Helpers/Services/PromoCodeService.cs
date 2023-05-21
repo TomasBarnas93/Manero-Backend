@@ -11,16 +11,23 @@ namespace Manero_Backend.Helpers.Services
     {
         private readonly IPromoCodeRepository _promoCodeRepository;
         private readonly IUserPromoCodeService _userPromoCodeService;
-        public PromoCodeService(IPromoCodeRepository promoCodeRepository, IUserPromoCodeService userPromoCodeService) : base(promoCodeRepository)
+        private readonly ICompanyService _companyService;
+        public PromoCodeService(IPromoCodeRepository promoCodeRepository, IUserPromoCodeService userPromoCodeService, ICompanyService companyService) : base(promoCodeRepository)
         {
             _promoCodeRepository = promoCodeRepository;
             _userPromoCodeService = userPromoCodeService;
+            _companyService = companyService;
         }
 
         public async Task<IActionResult> CreateAsync(PromoCodeEntity entity)
         {
+            if (!await _companyService.ExistsAsync(entity.CompanyId))
+                return HttpResultFactory.BadRequest(new { ErrorMessage = "Invalid id/s."});
+
             if (await _promoCodeRepository.CountAsync(x => x.Code == entity.Code) != 0)
                 return HttpResultFactory.Conflict();
+
+
 
             await _promoCodeRepository.CreateAsync(entity);
 
@@ -63,6 +70,19 @@ namespace Manero_Backend.Helpers.Services
             
 
             //return await _promoCodeRepository.GetAsync(x => x.UserPromoCodes.Where(y => y.AppUserId == userId && y.PromoCodeId == promoCode.Id && !y.Used).FirstOrDefault() != null) != null ? HttpResultFactory.Ok((PromoCodeDto)promoCode) : HttpResultFactory.BadRequest(new { ErrorMessage = "PromoCode already used."});
+        }
+
+        public async Task<PromoCodeEntity> GetValidateAsync(Guid promoCodeId)
+        {
+            PromoCodeEntity promoCode = await _promoCodeRepository.GetAsync(x => x.Id == promoCodeId);
+            if (promoCode == null)
+                return null;
+
+            //Check if expired
+            if (promoCode.ValidToUnix < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+                return null;
+
+            return promoCode;
         }
     }
 }

@@ -9,5 +9,6 @@ namespace Manero_Backend.Models.Interfaces.Services
         public Task<IActionResult> AddAsync(string code, string userId);
         public Task<IActionResult> GetAllAsync(string userId);
         public Task<IActionResult> GetValidateAsync(string code, string userId);
+        public Task<PromoCodeEntity> GetValidateAsync(Guid promoCodeId);
     }
 }

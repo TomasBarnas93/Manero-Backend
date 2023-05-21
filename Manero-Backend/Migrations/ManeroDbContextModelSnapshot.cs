@@ -140,7 +140,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.CategoryEntity", b =>
@@ -151,11 +151,14 @@ namespace Manero_Backend.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.ColorEntity", b =>
@@ -170,11 +173,14 @@ namespace Manero_Backend.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Colors");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Colors", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.CompanyEntity", b =>
@@ -185,11 +191,14 @@ namespace Manero_Backend.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.OrderEntity", b =>
@@ -204,6 +213,17 @@ namespace Manero_Backend.Migrations
                     b.Property<string>("AppUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Cancelled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CancelledMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("PaymentDetailId")
                         .HasColumnType("uniqueidentifier");
@@ -224,7 +244,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("PromoCodeId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.OrderProductEntity", b =>
@@ -258,7 +278,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("OrderProducts");
+                    b.ToTable("OrderProducts", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.OrderStatusEntity", b =>
@@ -267,7 +287,13 @@ namespace Manero_Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("EstTimeUnix")
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("CompletedUnix")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("EstimatedTimeUnix")
                         .HasColumnType("bigint");
 
                     b.Property<Guid>("OrderId")
@@ -282,7 +308,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("OrderStatusTypeId");
 
-                    b.ToTable("OrderStatuses");
+                    b.ToTable("OrderStatuses", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.OrderStatusTypeEntity", b =>
@@ -291,13 +317,24 @@ namespace Manero_Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("DescriptionCompleted")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DescriptionEstimated")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("OrderStatusTypes");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("OrderStatusTypes", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.PaymentDetailEntity", b =>
@@ -330,7 +367,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("PaymentDetails");
+                    b.ToTable("PaymentDetails", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.ProductColorEntity", b =>
@@ -351,7 +388,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductColors");
+                    b.ToTable("ProductColors", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.ProductEntity", b =>
@@ -386,7 +423,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.ProductSizeEntity", b =>
@@ -407,7 +444,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("ProductSizes");
+                    b.ToTable("ProductSizes", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.PromoCodeEntity", b =>
@@ -418,7 +455,7 @@ namespace Manero_Backend.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
@@ -431,9 +468,12 @@ namespace Manero_Backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("PromoCodes");
+                    b.ToTable("PromoCodes", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.ReviewEntity", b =>
@@ -462,7 +502,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.SizeEntity", b =>
@@ -473,11 +513,14 @@ namespace Manero_Backend.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sizes");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Sizes", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.TagEntity", b =>
@@ -488,11 +531,14 @@ namespace Manero_Backend.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.TagProductEntity", b =>
@@ -513,7 +559,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("TagProducts");
+                    b.ToTable("TagProducts", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.UserPromoCodeEntity", b =>
@@ -538,7 +584,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("PromoCodeId");
 
-                    b.ToTable("UserPromoCodes");
+                    b.ToTable("UserPromoCodes", (string)null);
                 });
 
             modelBuilder.Entity("Manero_Backend.Models.Entities.WishEntity", b =>
@@ -560,7 +606,7 @@ namespace Manero_Backend.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("WishList");
+                    b.ToTable("WishList", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
