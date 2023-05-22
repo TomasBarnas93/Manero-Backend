@@ -200,6 +200,7 @@ namespace Manero_Backend.Contexts
 
 				order.Property(o => o.TotalPrice)
 				.HasColumnType("decimal(18,2)");
+
 			});
 
 			modelBuilder.Entity<OrderStatusTypeEntity>(orderStatusType =>

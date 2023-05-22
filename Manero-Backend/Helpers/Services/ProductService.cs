@@ -122,6 +122,10 @@ public class ProductService : BaseService<ProductEntity>, IProductService
 		return HttpResultFactory.Created("", "");
 	}
 
+    public async Task<decimal> CalcTotalPrice(List<Guid> productIds, Guid companyId, decimal discount)
+    {
+        return await _productRepository.CalcTotalPrice(productIds, companyId, discount);
+    }
 
 
     public async Task FillDataAsync()

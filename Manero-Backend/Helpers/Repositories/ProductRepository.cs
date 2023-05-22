@@ -131,5 +131,17 @@ namespace Manero_Backend.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+		public async Task<decimal> CalcTotalPrice(List<Guid> productIds, Guid companyId, decimal discount)
+		{
+
+			return await _context.Products.Where(x => productIds.Contains(x.Id) && x.CompanyId != companyId)
+				.SumAsync(x => x.Price)
+				+
+			await _context.Products.Where(x => productIds.Contains(x.Id) && x.CompanyId == companyId)
+                .SumAsync(x => x.Price - (x.Price * discount));
+        }
+
+		
 	}
 }

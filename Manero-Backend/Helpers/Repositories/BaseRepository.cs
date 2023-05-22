@@ -33,6 +33,8 @@ namespace Manero_Backend.Helpers.Repositories
             return null!;
         }
 
+
+
         public virtual async Task<TEntity?> GetByIdAsync(Guid id)
         {
             try
@@ -92,12 +94,8 @@ namespace Manero_Backend.Helpers.Repositories
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            try
-            {
-                _dbSet.Update(entity);
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+            _dbSet.Update(entity);
+            await _dbContext.SaveChangesAsync();
 
             return entity;
         }
@@ -127,6 +125,11 @@ namespace Manero_Backend.Helpers.Repositories
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return (await _dbContext.Set<TEntity>().FirstOrDefaultAsync(predicate))!;
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await _dbContext.Set<TEntity>().Where(predicate).ToListAsync();
         }
     }
 }

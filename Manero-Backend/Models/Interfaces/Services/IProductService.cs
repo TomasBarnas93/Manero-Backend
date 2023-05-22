@@ -14,6 +14,6 @@ public interface IProductService: IBaseService<ProductEntity>
     public Task<IActionResult> GetByGuid(Guid guid, string userId);
     public Task<IActionResult> CreateAsync(ProductSchema schema);
 
-
+    public Task<decimal> CalcTotalPrice(List<Guid> productIds, Guid companyId, decimal discount);
     public Task FillDataAsync();
 }

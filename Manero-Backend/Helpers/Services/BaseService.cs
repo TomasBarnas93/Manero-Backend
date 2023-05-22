@@ -34,4 +34,14 @@ public class BaseService<TEntity> : IBaseService<TEntity> where  TEntity : class
     {
         await _baseRepository.AddRangedAsync(entities);
     }
+
+    public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await _baseRepository.GetAllAsync(predicate);
+    }
+
+    public async Task<TEntity> UpdateAsync(TEntity entity)
+    {
+        return await _baseRepository.UpdateAsync(entity);
+    }
 }

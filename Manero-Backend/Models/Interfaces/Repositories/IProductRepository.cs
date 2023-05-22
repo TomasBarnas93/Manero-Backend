@@ -11,5 +11,6 @@ namespace Manero_Backend.Models.Interfaces.Repositories
         public Task<bool> ExistsAsync(Guid guid);
 
         public Task<List<ProductEntity>> GetWishListAsync(string userId);
+        public Task<decimal> CalcTotalPrice(List<Guid> productIds, Guid companyId, decimal discount);
     }
 }

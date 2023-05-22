@@ -13,14 +13,14 @@ namespace Manero_Backend.Models.Entities
 
         public Guid AddressId { get; set; }
         public AddressEntity Address { get; set; }
-        public Guid PromoCodeId { get; set; }
+        public Guid? PromoCodeId { get; set; }
         public PromoCodeEntity PromoCode { get; set; }
 
         public decimal TotalPrice { get; set; }
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         public bool Cancelled { get; set; }
-        public string CancelledMessage { get; set; }
+        public string? CancelledMessage { get; set; }
 
 
         public ICollection<OrderProductEntity> OrderProducts { get; set; } //M:M

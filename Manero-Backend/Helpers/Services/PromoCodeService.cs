@@ -67,9 +67,6 @@ namespace Manero_Backend.Helpers.Services
 
 
             return HttpResultFactory.Ok((PromoCodeDto)await _promoCodeRepository.GetAsync(code));
-            
-
-            //return await _promoCodeRepository.GetAsync(x => x.UserPromoCodes.Where(y => y.AppUserId == userId && y.PromoCodeId == promoCode.Id && !y.Used).FirstOrDefault() != null) != null ? HttpResultFactory.Ok((PromoCodeDto)promoCode) : HttpResultFactory.BadRequest(new { ErrorMessage = "PromoCode already used."});
         }
 
         public async Task<PromoCodeEntity> GetValidateAsync(Guid promoCodeId)
