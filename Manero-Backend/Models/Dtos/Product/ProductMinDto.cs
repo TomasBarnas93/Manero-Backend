@@ -16,7 +16,7 @@ namespace Manero_Backend.Models.Dtos.Product
         public int ReviewCount { get; set; }
 
         public bool Liked { get; set; }
-
+        public CompanyEntity Company { get; set; } = null!;
         public IEnumerable<TagEntity> Tags { get; set; } = null!;
         public CategoryEntity Category { get; set; } = null!;
         public IEnumerable<ColorEntity> Colors { get; set; } = null!;

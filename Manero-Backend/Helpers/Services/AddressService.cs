@@ -8,6 +8,7 @@ using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Manero_Backend.Helpers.Services
 {
@@ -65,5 +66,9 @@ namespace Manero_Backend.Helpers.Services
             return HttpResultFactory.NoContent();
         }
 
+        public async Task<bool> ExistsAsync(Expression<Func<AddressEntity, bool>> predicate)
+        {
+            return await _addressRepository.ExistsAsync(predicate);
+        }
     }
 }

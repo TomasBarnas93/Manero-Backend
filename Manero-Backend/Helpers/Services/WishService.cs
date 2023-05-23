@@ -38,6 +38,8 @@ namespace Manero_Backend.Helpers.Services
 
         public async Task<IActionResult> GetAllAsync(string userId)
         {
+
+          
             return HttpResultFactory.Ok((await _productRepository.GetWishListAsync(userId)).Select(x => 
             {
                 var productMinDto = (ProductMinDto)x;

@@ -60,6 +60,8 @@ namespace Manero_Backend.Contexts
 				.HasForeignKey(o => o.PromoCodeId)
 				.OnDelete(DeleteBehavior.NoAction);
 
+				
+
 				promoCode.Property(pc => pc.Discount)
 					.HasColumnType("decimal(3,2)");
 				promoCode.HasIndex(x => x.Code)
@@ -77,6 +79,11 @@ namespace Manero_Backend.Contexts
 				.WithOne(p => p.Company)
 				.HasForeignKey(p => p.CompanyId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+
+
+				company.HasIndex(x => x.Name)
+					.IsUnique();
 			});
 
 			modelBuilder.Entity<AddressEntity>(address =>
@@ -94,6 +101,8 @@ namespace Manero_Backend.Contexts
 				.HasForeignKey(tp => tp.TagId)
 				.OnDelete(DeleteBehavior.NoAction);
 
+				tag.HasIndex(x => x.Name)
+				.IsUnique();
 			});
 
 			modelBuilder.Entity<ProductEntity>(product =>
@@ -138,6 +147,9 @@ namespace Manero_Backend.Contexts
 				.WithOne(p => p.Category)
 				.HasForeignKey(p => p.CategoryId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+				category.HasIndex(x => x.Name)
+					.IsUnique();
 			});
 
 			modelBuilder.Entity<SizeEntity>(size => 
@@ -151,6 +163,9 @@ namespace Manero_Backend.Contexts
 				.WithOne(ps => ps.Size)
 				.HasForeignKey(ps => ps.SizeId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+				size.HasIndex(x => x.Name)
+					.IsUnique();
 				
 			});
 
@@ -165,6 +180,10 @@ namespace Manero_Backend.Contexts
 				.WithOne(pc => pc.Color)
 				.HasForeignKey(pc => pc.ColorId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+				
+				color.HasIndex(x => x.Name)
+					.IsUnique();
 			});
 
 			modelBuilder.Entity<OrderEntity>(order =>
@@ -181,6 +200,7 @@ namespace Manero_Backend.Contexts
 
 				order.Property(o => o.TotalPrice)
 				.HasColumnType("decimal(18,2)");
+
 			});
 
 			modelBuilder.Entity<OrderStatusTypeEntity>(orderStatusType =>
@@ -189,6 +209,9 @@ namespace Manero_Backend.Contexts
 				.WithOne(os => os.OrderStatusType)
 				.HasForeignKey(os => os.OrderStatusTypeId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+				orderStatusType.HasIndex(x => x.Name)
+				.IsUnique();
 			});
 
 			modelBuilder.Entity<PaymentDetailEntity>(paymentDetail =>

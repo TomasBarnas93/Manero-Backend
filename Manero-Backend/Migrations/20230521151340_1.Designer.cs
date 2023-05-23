@@ -4,6 +4,7 @@ using Manero_Backend.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Manero_Backend.Migrations
 {
     [DbContext(typeof(ManeroDbContext))]
-    partial class ManeroDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230521151340_1")]
+    partial class _1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -218,16 +221,17 @@ namespace Manero_Backend.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("CancelledMessage")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Comment")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("PaymentDetailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PromoCodeId")
-                        .IsRequired()
+                    b.Property<Guid>("PromoCodeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TotalPrice")

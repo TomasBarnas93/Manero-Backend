@@ -23,5 +23,11 @@ namespace Manero_Backend.Helpers.Services
 
             return HttpResultFactory.Created("","");
         }
+
+        public async Task<UserPromoCodeEntity> GetAsync(Guid promoCodeId, string userId)
+        {
+            return await _userPromoCodeRepository.GetAsync(x => x.AppUserId == userId && x.PromoCodeId == promoCodeId);
+        }
+        
     }
 }

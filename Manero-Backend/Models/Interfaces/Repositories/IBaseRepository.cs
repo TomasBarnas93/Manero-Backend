@@ -15,5 +15,8 @@ namespace Manero_Backend.Models.Interfaces.Repositories
         public Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate);
         public Task AddRangedAsync(ICollection<TEntity> entities);
         public Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate);
+        public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate);
+
+        public Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate);
     }
 }

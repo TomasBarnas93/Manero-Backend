@@ -1,9 +1,11 @@
 ﻿using Manero_Backend.Models.Dtos.PromoCode;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Manero_Backend.Models.Entities
 {
     public class PromoCodeEntity : BaseEntity
     {
+        [ForeignKey("CompanyId")]
         public Guid CompanyId { get; set; }
         public CompanyEntity Company { get; set; }
         public decimal Discount { get; set; }

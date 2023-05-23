@@ -5,15 +5,16 @@ using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Schemas.Product;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Linq.Expressions;
 
 namespace Manero_Backend.Repositories
 {
     public class ProductRepository : BaseRepository<ProductEntity>, IProductRepository
 	{
 		private readonly ManeroDbContext _context;
-		private readonly IDbContextTransaction _transaction;
 		public ProductRepository(ManeroDbContext context) : base(context)
 		{
 			_context = context;
@@ -46,55 +47,43 @@ namespace Manero_Backend.Repositories
 				.Include(x => x.ProductSizes).ThenInclude(x => x.Size)
 				.Include(x => x.Reviews)
 				.Include(x => x.WishList)
+				.Include(x => x.Company)
 				.Where(x => (x.Category.Id == option.CategoryId && x.TagProducts.Any(a => a.Tag.Id == option.TagId)) || (x.CategoryId == option.CategoryId) || (x.TagProducts.Any(a => a.Tag.Id == option.TagId))).Take(option.Count).ToListAsync();
         }
 
-		public async Task<List<ProductEntity>> GetWishListAsync(string userId)
+        public async Task<List<ProductEntity>> GetAllIncludeAsync(Expression<Func<ProductEntity, bool>> predicate)
 		{
-			return await _context.Products.Include(x => x.TagProducts).ThenInclude(x => x.Tag)
+            return await _context.Products
+                .Include(x => x.TagProducts).ThenInclude(x => x.Tag)
                 .Include(x => x.Category)
                 .Include(x => x.ProductColors).ThenInclude(x => x.Color)
                 .Include(x => x.ProductSizes).ThenInclude(x => x.Size)
                 .Include(x => x.Reviews)
-				.Where(x => x.WishList.Any(w => w.AppUserId == userId)).ToListAsync();
+                .Include(x => x.WishList)
+				.Include(x => x.Company)
+				.Where(predicate).ToListAsync();
         }
 
-
-        public async Task CreateAsync(ProductSchema schema)
-		{
-            //using await _context.Database.BeginTransactionAsync();
-            using var transaction = _context.Database.BeginTransaction();
-
-            try
-			{
-				ProductEntity entity = schema;
-				await _context.AddAsync(entity);
-				await _context.SaveChangesAsync();
-				
-                //await _context.Database.AddRangedAsync(schema.TagIds.Select(x => new TagProductEntity() { TagId = x, ProductId = entity.Id }).ToList());
-                //await _context.Database.AddRangedAsync(schema.ColorIds.Select(x => new ProductColorEntity() { ColorId = x, ProductId = entity.Id }).ToList());
-                //await _context.Database.AddRangedAsync(schema.SizeIds.Select(x => new ProductSizeEntity() { SizeId = x, ProductId = entity.Id }).ToList());
-
-
-                await _context.Database.CommitTransactionAsync();
-			}
-			catch(Exception e) //Ilogger
-			{
-
-				await _context.Database.RollbackTransactionAsync();
-			}
-			
-		}
+        public async Task<List<ProductEntity>> GetWishListAsync(string userId)
+        {
+            return await _context.Products.Include(x => x.TagProducts).ThenInclude(x => x.Tag)
+            .Include(x => x.Category)
+            .Include(x => x.ProductColors).ThenInclude(x => x.Color)
+            .Include(x => x.ProductSizes).ThenInclude(x => x.Size)
+            .Include(x => x.Reviews)
+            .Include(x => x.Company)
+            .Where(x => x.WishList.Any(w => w.AppUserId == userId)).ToListAsync();
+        }
         public async Task FillDataAsync()
-		{
+        {
             List<TagEntity> tagEntities = new List<TagEntity>()
             {
-                //new TagEntity() { Name = "Featured" },
-				new TagEntity() { Name = "Popular"},
-				new TagEntity() { Name = "Best"},
-				new TagEntity() { Name = "New"},
-				new TagEntity() { Name = "Men"},
-				new TagEntity() { Name = "Women"},
+                new TagEntity() { Name = "Featured" },
+                new TagEntity() { Name = "Popular"},
+                new TagEntity() { Name = "Best"},
+                new TagEntity() { Name = "New"},
+                new TagEntity() { Name = "Men"},
+                new TagEntity() { Name = "Women"},
 				new TagEntity() { Name = "Kid"}
             };
 
@@ -110,12 +99,12 @@ namespace Manero_Backend.Repositories
 
 			List<OrderStatusTypeEntity> orderStatusTypeEntities = new List<OrderStatusTypeEntity>()
 			{ 
-				new OrderStatusTypeEntity() { Name = "Order Created" },
-				new OrderStatusTypeEntity() { Name = "Order Confirmed" },
-				new OrderStatusTypeEntity() { Name = "Order Shipping" },
-				new OrderStatusTypeEntity() { Name = "Order Delivering" },
-				new OrderStatusTypeEntity() { Name = "Receiving" },
-				new OrderStatusTypeEntity() { Name = "Cancelled" }
+				new OrderStatusTypeEntity() { Name = "Order Created", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on " },
+				new OrderStatusTypeEntity() { Name = "Order Confirmed", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on "},
+				new OrderStatusTypeEntity() { Name = "Order Shipping", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on " },
+				new OrderStatusTypeEntity() { Name = "Order Delivering", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on " },
+				new OrderStatusTypeEntity() { Name = "Receiving", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on "},
+				new OrderStatusTypeEntity() { Name = "Cancelled", DescriptionEstimated = "Estimated for ", DescriptionCompleted = "Completed on "}
 			};
 
             List<ColorEntity> colorEntities = new List<ColorEntity>()
@@ -153,6 +142,29 @@ namespace Manero_Backend.Repositories
 			await _context.AddRangeAsync(companyEntities);
 
             await _context.SaveChangesAsync();
+        }
+
+		public async Task<decimal> CalcTotalPrice(List<Guid> productIds, Guid companyId, decimal discount)
+		{
+
+			return await _context.Products.Where(x => productIds.Contains(x.Id) && x.CompanyId != companyId)
+				.SumAsync(x => x.Price)
+				+
+			await _context.Products.Where(x => productIds.Contains(x.Id) && x.CompanyId == companyId)
+                .SumAsync(x => x.Price - (x.Price * discount));
+        }
+
+		public async Task<ICollection<ProductEntity>> GetAllDevAsync()
+		{
+            return await _context.Products
+                .Include(x => x.TagProducts).ThenInclude(x => x.Tag)
+                .Include(x => x.Category)
+                .Include(x => x.ProductColors).ThenInclude(x => x.Color)
+                .Include(x => x.ProductSizes).ThenInclude(x => x.Size)
+                .Include(x => x.Reviews)
+                .Include(x => x.WishList)
+                .Include(x => x.Company)
+                .ToListAsync();
         }
 	}
 }

@@ -83,7 +83,42 @@ namespace Manero_Backend.Controllers
             }
         }
 
+		[HttpGet("search/{condition}")]
+		public async Task<IActionResult> SearchAsync(string condition)
+		{
+            if (!ModelState.IsValid)
+                return BadRequest("");
 
+
+            try
+            {
+                string userId = null;
+                if (User.Identity.IsAuthenticated)
+                    userId = JwtToken.GetIdFromClaim(HttpContext);
+
+				return await _productService.SearchAsync(condition, userId);
+            }
+            catch (Exception e) //Log
+            {
+                return StatusCode(500, "");
+            }
+
+        }
+
+
+        [HttpGet]
+        [Route("~/v1/api/products")]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            try
+            {
+                return await _productService.GetAllDevAsync();
+            }
+            catch (Exception e) //Ilogger
+            {
+                return StatusCode(500, "");
+            }
+        }
 
         [Obsolete("May not work as intended. DO NO USE !")]
         [HttpGet("test")]
@@ -93,5 +128,6 @@ namespace Manero_Backend.Controllers
 
 			return Ok("");
 		}
+
 	}
 }

@@ -39,6 +39,9 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IUserPromoCodeRepository, UserPromoCodeRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderProductsRepository,  OrderProductsRepository>();
+builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
 
 //Services
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -59,7 +62,9 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
 builder.Services.AddScoped<IUserPromoCodeService, UserPromoCodeService>();
-
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderProductsService, OrderProductsService>();
+builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 //Identity and Authorization
 builder.Services.AddIdentity<AppUser, IdentityRole>(x =>
 {
