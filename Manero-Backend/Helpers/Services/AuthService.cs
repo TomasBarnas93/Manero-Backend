@@ -91,7 +91,7 @@ public class AuthService : IAuthService
 
         if (!resultRole.Succeeded) return HttpResultFactory.BadRequest("");
 
-        return HttpResultFactory.Created("", await _jwtToken.GenerateToken(identityUser));
+        return HttpResultFactory.Created("", await _jwtToken.GenerateToken(identityUser, false));
     }
     
     #endregion
@@ -109,7 +109,7 @@ public class AuthService : IAuthService
             return HttpResultFactory.Unauthorized("");
         
 
-        return HttpResultFactory.Ok(await _jwtToken.GenerateToken(identityUser));
+        return HttpResultFactory.Ok(await _jwtToken.GenerateToken(identityUser, schema.RememberMe));
     }
     
     #endregion

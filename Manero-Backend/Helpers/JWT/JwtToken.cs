@@ -22,11 +22,14 @@ public class JwtToken : IJwtToken
         _userManager = userManager;
     }
 
-    public async Task<string> GenerateToken(AppUser user)
+    public async Task<string> GenerateToken(AppUser user, bool rememberMe)
     {
         
         var identity = await GenerateClaimsIdentity(user);
         var expires = DateTime.UtcNow.AddDays(1);
+        if (rememberMe)
+            expires = DateTime.UtcNow.AddMonths(3);
+        
         //var expires = DateTime.UtcNow.AddSeconds(1);
         
         var tokenHandler = new JwtSecurityTokenHandler();
