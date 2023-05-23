@@ -5,15 +5,16 @@ using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Schemas.Product;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Linq.Expressions;
 
 namespace Manero_Backend.Repositories
 {
     public class ProductRepository : BaseRepository<ProductEntity>, IProductRepository
 	{
 		private readonly ManeroDbContext _context;
-		private readonly IDbContextTransaction _transaction;
 		public ProductRepository(ManeroDbContext context) : base(context)
 		{
 			_context = context;
@@ -50,28 +51,39 @@ namespace Manero_Backend.Repositories
 				.Where(x => (x.Category.Id == option.CategoryId && x.TagProducts.Any(a => a.Tag.Id == option.TagId)) || (x.CategoryId == option.CategoryId) || (x.TagProducts.Any(a => a.Tag.Id == option.TagId))).Take(option.Count).ToListAsync();
         }
 
-		public async Task<List<ProductEntity>> GetWishListAsync(string userId)
+        public async Task<List<ProductEntity>> GetAllIncludeAsync(Expression<Func<ProductEntity, bool>> predicate)
 		{
-			return await _context.Products.Include(x => x.TagProducts).ThenInclude(x => x.Tag)
+            return await _context.Products
+                .Include(x => x.TagProducts).ThenInclude(x => x.Tag)
                 .Include(x => x.Category)
                 .Include(x => x.ProductColors).ThenInclude(x => x.Color)
                 .Include(x => x.ProductSizes).ThenInclude(x => x.Size)
                 .Include(x => x.Reviews)
-				.Where(x => x.WishList.Any(w => w.AppUserId == userId)).ToListAsync();
+                .Include(x => x.WishList)
+				.Include(x => x.Company)
+				.Where(predicate).ToListAsync();
         }
 
-
-      
+        public async Task<List<ProductEntity>> GetWishListAsync(string userId)
+        {
+            return await _context.Products.Include(x => x.TagProducts).ThenInclude(x => x.Tag)
+            .Include(x => x.Category)
+            .Include(x => x.ProductColors).ThenInclude(x => x.Color)
+            .Include(x => x.ProductSizes).ThenInclude(x => x.Size)
+            .Include(x => x.Reviews)
+            .Include(x => x.Company)
+            .Where(x => x.WishList.Any(w => w.AppUserId == userId)).ToListAsync();
+        }
         public async Task FillDataAsync()
-		{
+        {
             List<TagEntity> tagEntities = new List<TagEntity>()
             {
                 new TagEntity() { Name = "Featured" },
-				new TagEntity() { Name = "Popular"},
-				new TagEntity() { Name = "Best"},
-				new TagEntity() { Name = "New"},
-				new TagEntity() { Name = "Men"},
-				new TagEntity() { Name = "Women"},
+                new TagEntity() { Name = "Popular"},
+                new TagEntity() { Name = "Best"},
+                new TagEntity() { Name = "New"},
+                new TagEntity() { Name = "Men"},
+                new TagEntity() { Name = "Women"},
 				new TagEntity() { Name = "Kid"}
             };
 
@@ -142,6 +154,17 @@ namespace Manero_Backend.Repositories
                 .SumAsync(x => x.Price - (x.Price * discount));
         }
 
-		
+		public async Task<ICollection<ProductEntity>> GetAllDevAsync()
+		{
+            return await _context.Products
+                .Include(x => x.TagProducts).ThenInclude(x => x.Tag)
+                .Include(x => x.Category)
+                .Include(x => x.ProductColors).ThenInclude(x => x.Color)
+                .Include(x => x.ProductSizes).ThenInclude(x => x.Size)
+                .Include(x => x.Reviews)
+                .Include(x => x.WishList)
+                .Include(x => x.Company)
+                .ToListAsync();
+        }
 	}
 }

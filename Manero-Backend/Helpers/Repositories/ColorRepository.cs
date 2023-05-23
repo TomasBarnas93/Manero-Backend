@@ -1,6 +1,7 @@
 ﻿using Manero_Backend.Contexts;
 using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Helpers.Repositories
 {
@@ -12,5 +13,7 @@ namespace Manero_Backend.Helpers.Repositories
         {
             _context = context;
         }
+
+        
     }
 }

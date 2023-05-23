@@ -60,8 +60,7 @@ public class ProductEntity : BaseEntity
 			Colors = entity.ProductColors.Select(x => new ColorEntity() { Id = x.Color.Id, Name = x.Color.Name, Hex = x.Color.Hex }).ToList(),
 			Sizes = entity.ProductSizes.Select(x => new SizeEntity() { Id = x.Size.Id, Name = x.Size.Name }).ToList(),
 			Tags = entity.TagProducts.Select(x => new TagEntity() { Id = x.Tag.Id, Name = x.Tag.Name }).ToList(),
-			Reviews = entity.Reviews.Select(x => new { Id = x.Id, Rating = x.Rating, RatedBy = new { FirstName = x.AppUser.FirstName, LastName = x.AppUser.LastName} })
-			//Reviews = entity.Reviews.Select(x => new ReviewEntity() { Id = x.Id, Rating = x.Rating, AppUser = new { FirstName = x.AppUser.FirstName, LastName = x.AppUser.LastName }})
+			Reviews = entity.Reviews.Select(x => new { Id = x.Id, Rating = x.Rating, RatedBy = new { FirstName = x.AppUser.FirstName, LastName = x.AppUser.LastName, Comment = x.Comment } })
         };
 	}
 }

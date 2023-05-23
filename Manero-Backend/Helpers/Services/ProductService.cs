@@ -9,10 +9,8 @@ using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Models.Schemas.Product;
-using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Formats.Asn1;
+
 
 namespace Manero_Backend.Helpers.Services;
 
@@ -68,7 +66,7 @@ public class ProductService : BaseService<ProductEntity>, IProductService
 			if (productOption.TagId == null && productOption.CategoryId == null) //1.
 			{
 				result.Add(new { Option = productOption, Result = string.Empty, ErrorMessage = "Provide at least a TagId or a CategoryId." });
-
+                
 				continue;
 			}
 
@@ -127,6 +125,35 @@ public class ProductService : BaseService<ProductEntity>, IProductService
         return await _productRepository.CalcTotalPrice(productIds, companyId, discount);
     }
 
+
+    public async Task<IActionResult> SearchAsync(string condition, string userId)
+    {
+        return HttpResultFactory.Ok((await _productRepository.GetAllIncludeAsync(x => x.Name.Contains(condition)))
+            .Select(x =>
+            {
+                var productMinDto = (ProductMinDto)x;
+                productMinDto.Liked = x.WishList.Where(y => y.AppUserId == userId && y.ProductId == x.Id).FirstOrDefault() != null;
+                return productMinDto;
+            }
+
+            ));
+    }
+
+    public async Task<IActionResult> GetAllDevAsync()
+    {
+        ICollection<ProductEntity> entities = (ICollection<ProductEntity>)await _productRepository.GetAllDevAsync();
+
+        var result = entities.Select(
+            x =>
+            {
+                var productMinDto = (ProductMinDto)x;
+                productMinDto.Liked = false;
+                return productMinDto;
+            }
+            );
+
+        return HttpResultFactory.Ok(result);
+    }
 
     public async Task FillDataAsync()
 	{
