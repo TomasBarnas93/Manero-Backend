@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Manero_Backend.Migrations
 {
     [DbContext(typeof(ManeroDbContext))]
-    [Migration("20230524135111_2")]
-    partial class _2
+    [Migration("20230524150759_1")]
+    partial class _1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
