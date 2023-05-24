@@ -451,11 +451,11 @@ namespace Manero_Backend.Migrations
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PaymentDetailId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PromoCodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PromoCodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Cancelled = table.Column<bool>(type: "bit", nullable: false),
-                    CancelledMessage = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CancelledMessage = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

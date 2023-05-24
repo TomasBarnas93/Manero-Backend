@@ -14,5 +14,5 @@ public interface IBaseService<TEntity> where TEntity : class
     public Task<TEntity> UpdateAsync(TEntity entity);
 
     public Task<IActionResult> GetAllAsync();
-
+    public Task<IEnumerable<TEntity>> GetAllIEnurableAsync();
 }

@@ -52,4 +52,9 @@ public class BaseService<TEntity> : IBaseService<TEntity> where  TEntity : class
     {
         return HttpResultFactory.Ok(await _baseRepository.GetAllAsync());
     }
+
+    public async Task<IEnumerable<TEntity>> GetAllIEnurableAsync()
+    {
+        return await _baseRepository.GetAllAsync();
+    }
 }

@@ -111,7 +111,7 @@ namespace Manero_Backend.Repositories
             {
                 new ColorEntity() { Name = "Red", Hex = "#fd3412" },
 				new ColorEntity() { Name = "Blue", Hex = "#21a5ff" },
-				new ColorEntity() { Name = "Beige", Hex = "#fff8e7'" },
+				new ColorEntity() { Name = "Beige", Hex = "#fff8e7" },
 				new ColorEntity() { Name = "Dark Blue", Hex = "#140062" },
 				new ColorEntity() { Name = "Black", Hex = "#000000" },
             };

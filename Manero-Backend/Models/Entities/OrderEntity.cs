@@ -1,4 +1,5 @@
 ﻿using Manero_Backend.Models.Auth;
+using Manero_Backend.Models.Dtos.Order;
 
 namespace Manero_Backend.Models.Entities
 {
@@ -26,5 +27,17 @@ namespace Manero_Backend.Models.Entities
         public ICollection<OrderProductEntity> OrderProducts { get; set; } //M:M
         public ICollection<OrderStatusEntity> OrderStatuses { get; set; } //M:M men jag tycer det är m:1
         
+
+        public static implicit operator OrderDto(OrderEntity entity)
+        {
+            return new OrderDto()
+            {
+                OrderId = entity.Id,
+                TotalPrice = entity.TotalPrice,
+                OrderStatusTypeId = entity.Cancelled ? entity.OrderStatuses.OrderByDescending(x => x.CompletedUnix).First().OrderStatusTypeId : entity.OrderStatuses.OrderBy(x => x.EstimatedTimeUnix).Where(x => x.Completed == false).First().OrderStatusTypeId,
+                LatestCompletedUnix = entity.OrderStatuses.OrderByDescending(x => x.CompletedUnix).Where(x => x.Completed).First().CompletedUnix 
+            };
+        }
+
     }
 }
