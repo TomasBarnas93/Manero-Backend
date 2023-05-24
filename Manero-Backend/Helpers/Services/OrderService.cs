@@ -1,8 +1,10 @@
 ﻿using Manero_Backend.Helpers.Factory;
+using Manero_Backend.Models.Dtos.Order;
 using Manero_Backend.Models.Entities;
 using Manero_Backend.Models.Interfaces.Repositories;
 using Manero_Backend.Models.Interfaces.Services;
 using Manero_Backend.Models.Schemas.Order;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manero_Backend.Helpers.Services
@@ -17,8 +19,8 @@ namespace Manero_Backend.Helpers.Services
         private readonly IProductService _productService;
         private readonly IProductColorService _productColorService;
         private readonly IOrderProductsService _orderProductsService;
-        private readonly IOrderStatusRepository _orderStatusRepository;
-        public OrderService(IOrderRepository orderRepository, IPromoCodeService promoCodeService, IUserPromoCodeService userPromoCodeService, IAddressService addressService, IPaymentDetailService paymentDetailService, IProductService productService, IProductColorService productColorService, IOrderProductsService orderProductsService, IOrderStatusRepository orderStatusRepository) : base(orderRepository)
+        private readonly IOrderStatusService _orderStatusService;
+        public OrderService(IOrderRepository orderRepository, IPromoCodeService promoCodeService, IUserPromoCodeService userPromoCodeService, IAddressService addressService, IPaymentDetailService paymentDetailService, IProductService productService, IProductColorService productColorService, IOrderProductsService orderProductsService, IOrderStatusService orderStatusService) : base(orderRepository)
         {
             _orderRepository = orderRepository;
             _promoCodeService = promoCodeService;
@@ -28,7 +30,8 @@ namespace Manero_Backend.Helpers.Services
             _productService = productService;
             _productColorService = productColorService;
             _orderProductsService = orderProductsService;
-            _orderStatusRepository = orderStatusRepository;
+
+            _orderStatusService = orderStatusService;
         }
 
         public async Task<IActionResult> CreateAsync(OrderSchema schema, string userId)
@@ -111,52 +114,9 @@ namespace Manero_Backend.Helpers.Services
 
             await _orderProductsService.AddRangedAsync(schema.OrderProducts.Select(x => new OrderProductEntity() { OrderId = orderEntity.Id, ProductId = x.ProductId, ColorId = x.ColorId, SizeId = x.SizeId, Quantity = x.Quantity }).ToList());
 
-            List<OrderStatusEntity> orderStatues = new List<OrderStatusEntity>();
-
-            orderStatues.Add(new OrderStatusEntity()
-            {
-                OrderId = orderEntity.Id,
-                OrderStatusTypeId = Guid.Parse("ca596a28-4009-4d29-f379-08db5a0e0d5a"),
-                Completed = true,
-                CompletedUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                EstimatedTimeUnix = 0
-            });
-            orderStatues.Add(new OrderStatusEntity()
-            {
-                OrderId = orderEntity.Id,
-                OrderStatusTypeId = Guid.Parse("087a61ce-318f-436e-f37a-08db5a0e0d5a"),
-                Completed = true,
-                CompletedUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                EstimatedTimeUnix = 0
-            });
-            orderStatues.Add(new OrderStatusEntity()
-            {
-                OrderId = orderEntity.Id,
-                OrderStatusTypeId = Guid.Parse("547fe825-7621-4b28-f37b-08db5a0e0d5a"),
-                Completed = false,
-                CompletedUnix = 0,
-                EstimatedTimeUnix = DateTimeOffset.UtcNow.AddDays(1).ToUnixTimeSeconds()
-            });
-            orderStatues.Add(new OrderStatusEntity()
-            {
-                OrderId = orderEntity.Id,
-                OrderStatusTypeId = Guid.Parse("1e915510-4161-4443-f37c-08db5a0e0d5a"),
-                Completed = false,
-                CompletedUnix = 0,
-                EstimatedTimeUnix = DateTimeOffset.UtcNow.AddDays(4).ToUnixTimeSeconds()
-            });
-            orderStatues.Add(new OrderStatusEntity()
-            {
-                OrderId = orderEntity.Id,
-                OrderStatusTypeId = Guid.Parse("00ad9bdf-55db-4959-f37d-08db5a0e0d5a"),
-                Completed = false,
-                CompletedUnix = 0,
-                EstimatedTimeUnix = DateTimeOffset.UtcNow.AddDays(7).ToUnixTimeSeconds()
-            });
-
-            await _orderStatusRepository.AddRangedAsync(orderStatues);
-
-
+            //Get all orderstatustypes
+            await _orderStatusService.AddRangedAsync(await _orderStatusService.CreateStatic(orderEntity.Id));
+            
             //update or add userpromocode.
             if(promoCode != null)
             {
@@ -177,6 +137,39 @@ namespace Manero_Backend.Helpers.Services
 
         }
 
+        public async Task<IActionResult> GetHistoryAsync(string userId)
+        {
+            return HttpResultFactory.Ok((await _orderRepository.GetAllIncludeAsync(userId)).Select( x => (OrderDto)x));
+        }
+        public async Task<IActionResult> GetStatusAsync(string userId, Guid orderId)
+        {
+            OrderEntity orderEntity = await _orderRepository.GetIncludeAsync(userId, orderId);
+            if(orderEntity == null)
+                return HttpResultFactory.NotFound();
 
+            if(orderEntity.Cancelled)
+            {
+                OrderStatusEntity status = orderEntity.OrderStatuses.Last();
+                return HttpResultFactory.Ok(new {OrderId = orderEntity.Id ,Statuses = new List<OrderStatusDto> { new OrderStatusDto() { Name = status.OrderStatusType.Name, Description = orderEntity.CancelledMessage, Completed = true } } });
+            }
+
+            return HttpResultFactory.Ok(new { OrderId = orderEntity.Id, Statuses = orderEntity.OrderStatuses.Select( x=> (OrderStatusDto)x)});
+        }
+
+        public async Task<IActionResult> CancelAsync(OrderCancelSchema schema)
+        {
+            OrderEntity orderEntity = await _orderRepository.GetIncludeAsync(schema.OrderId);
+            if (orderEntity == null)
+                return HttpResultFactory.NotFound();
+
+            orderEntity.Cancelled = true;
+            orderEntity.CancelledMessage = schema.CancelMessage;
+
+            await _orderRepository.UpdateAsync(orderEntity);
+
+            await _orderStatusService.AddCanceledAsync(orderEntity.Id);
+
+            return HttpResultFactory.Created("","");
+        }
     }
 }

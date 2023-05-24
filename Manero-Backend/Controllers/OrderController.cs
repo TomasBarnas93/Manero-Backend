@@ -38,5 +38,62 @@ namespace Manero_Backend.Controllers
                 return StatusCode(500, "");
             }
         }
+
+        [HttpGet("history")]
+        public async Task<IActionResult> GetHistoryAsync()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("");
+
+            try
+            {
+                var userId = JwtToken.GetIdFromClaim(HttpContext);
+
+                return await _orderService.GetHistoryAsync(userId);
+            }
+            catch (Exception e) //Ilogger
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, "");
+            }
+        }
+
+        [HttpGet("status/{orderid}")]
+        public async Task<IActionResult> GetStatusAsync(Guid orderId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("");
+
+            try
+            {
+                var userId = JwtToken.GetIdFromClaim(HttpContext);
+
+                return await _orderService.GetStatusAsync(userId, orderId);
+            }
+            catch (Exception e) //Ilogger
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, "");
+            }
+
+        }
+
+        [HttpPost("cancel")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CancelAsync(OrderCancelSchema schema)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("");
+
+            try
+            {
+                return await _orderService.CancelAsync(schema);
+            }
+            catch (Exception e) //Ilogger
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, "");
+            }
+        }
     }
 }

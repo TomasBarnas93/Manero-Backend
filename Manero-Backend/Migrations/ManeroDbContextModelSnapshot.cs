@@ -227,7 +227,6 @@ namespace Manero_Backend.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("PromoCodeId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TotalPrice")
@@ -775,8 +774,7 @@ namespace Manero_Backend.Migrations
                     b.HasOne("Manero_Backend.Models.Entities.PromoCodeEntity", "PromoCode")
                         .WithMany("Orders")
                         .HasForeignKey("PromoCodeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Address");
 

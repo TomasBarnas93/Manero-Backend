@@ -131,5 +131,6 @@ namespace Manero_Backend.Helpers.Repositories
         {
             return await _dbContext.Set<TEntity>().Where(predicate).ToListAsync();
         }
+
     }
 }

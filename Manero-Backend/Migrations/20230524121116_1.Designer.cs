@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Manero_Backend.Migrations
 {
     [DbContext(typeof(ManeroDbContext))]
-    [Migration("20230521151340_1")]
+    [Migration("20230524121116_1")]
     partial class _1
     {
         /// <inheritdoc />
@@ -221,17 +221,16 @@ namespace Manero_Backend.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("CancelledMessage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("PaymentDetailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PromoCodeId")
+                    b.Property<Guid?>("PromoCodeId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TotalPrice")
