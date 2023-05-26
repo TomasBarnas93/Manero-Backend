@@ -139,7 +139,7 @@ public class ProductService : BaseService<ProductEntity>, IProductService
             ));
     }
 
-    public async Task<IActionResult> GetAllDevAsync()
+    public async Task<IActionResult> GetAllDevAsync(string userId)
     {
         ICollection<ProductEntity> entities = (ICollection<ProductEntity>)await _productRepository.GetAllDevAsync();
 
@@ -147,7 +147,7 @@ public class ProductService : BaseService<ProductEntity>, IProductService
             x =>
             {
                 var productMinDto = (ProductMinDto)x;
-                productMinDto.Liked = false;
+                productMinDto.Liked = x.WishList.Where(y => y.AppUserId == userId && y.ProductId == x.Id).FirstOrDefault() != null;
                 return productMinDto;
             }
             );

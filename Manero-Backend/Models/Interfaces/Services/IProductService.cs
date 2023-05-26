@@ -17,6 +17,6 @@ public interface IProductService: IBaseService<ProductEntity>
 
     public Task<decimal> CalcTotalPrice(List<Guid> productIds, Guid companyId, decimal discount);
 
-    public Task<IActionResult> GetAllDevAsync();
+    public Task<IActionResult> GetAllDevAsync(string userId);
     public Task FillDataAsync();
 }
