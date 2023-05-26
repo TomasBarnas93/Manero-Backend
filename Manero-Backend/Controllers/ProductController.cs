@@ -112,7 +112,11 @@ namespace Manero_Backend.Controllers
         {
             try
             {
-                return await _productService.GetAllDevAsync();
+                string userId = null;
+                if (User.Identity.IsAuthenticated)
+                    userId = JwtToken.GetIdFromClaim(HttpContext);
+
+                return await _productService.GetAllDevAsync(userId);
             }
             catch (Exception e) //Ilogger
             {

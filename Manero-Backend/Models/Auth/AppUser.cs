@@ -1,3 +1,4 @@
+using Manero_Backend.Models.Dtos.User;
 using Manero_Backend.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 
@@ -9,6 +10,8 @@ public class AppUser : IdentityUser
     public string LastName { get; set; } = null!;
     public string Otp { get; set; } = "000000";
     public string? Location { get; set; }
+    public string? ImageUrl { get; set; }
+    
    
     public ICollection<AddressEntity> Addresses { get; set; } //M:1
     public ICollection<UserPromoCodeEntity> UserPromoCodes { get; set; } //M:M
@@ -17,5 +20,15 @@ public class AppUser : IdentityUser
     public ICollection<ReviewEntity> Reviews { get; set; } //M:M
     public ICollection<WishEntity> WishList { get; set; } //M:M
 
-
+    public static implicit operator UserProfileDto(AppUser user)
+    {
+        return new UserProfileDto
+        {
+            Name = user.FirstName + " " + user.LastName,
+            Email = user.Email,
+            ImageUrl = user.ImageUrl,
+            PhoneNumber = user.PhoneNumber,
+            Location = user.Location
+        };
+    }
 }
