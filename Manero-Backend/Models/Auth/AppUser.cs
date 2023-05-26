@@ -24,7 +24,8 @@ public class AppUser : IdentityUser
     {
         return new UserProfileDto
         {
-            Name = user.FirstName + " " + user.LastName,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
             Email = user.Email,
             ImageUrl = user.ImageUrl,
             PhoneNumber = user.PhoneNumber,

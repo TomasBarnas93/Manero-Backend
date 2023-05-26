@@ -2,6 +2,7 @@
 using Manero_Backend.Helpers.JWT;
 using Manero_Backend.Models.Auth;
 using Manero_Backend.Models.Dtos.User;
+using Manero_Backend.Models.Schemas.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -33,15 +34,46 @@ namespace Manero_Backend.Controllers
                 if (userId == null)
                     return NotFound();
 
-                var user = _userManager.FindByIdAsync(userId);
-                UserProfileDto profile = user.Result;
-
-                return HttpResultFactory.Ok(profile);
+                var user = await _userManager.FindByIdAsync(userId);
+ 
+                return HttpResultFactory.Ok((UserProfileDto)user);
             }
             catch (Exception e) //Ilogger
             {
                 return StatusCode(500, "");
             }
         }
+
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfile(ProfilePutSchema schema)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("");
+
+            try
+            {
+                var userId = JwtToken.GetIdFromClaim(HttpContext);
+                if (userId == null)
+                    return NotFound();
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                user.FirstName = schema.FirstName;
+                user.LastName = schema.LastName;
+                user.Email = schema.Email;
+                user.PhoneNumber = schema.PhoneNumber;
+                user.ImageUrl = schema.ImageUrl;
+                user.Location = schema.Location;
+
+                await _userManager.UpdateAsync(user);
+
+                return HttpResultFactory.NoContent();
+            }
+            catch (Exception e) //Ilogger
+            {
+                return StatusCode(500, "");
+            }
+        }
+
     }
 }
