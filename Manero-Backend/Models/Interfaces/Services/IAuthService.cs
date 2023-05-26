@@ -18,4 +18,9 @@ public interface IAuthService
     Task<IEnumerable<AppUser>> GetAllAsync();
     public Task<IActionResult> SetPhoneNumberAsync(string userId, string phoneNumber);
     public Task<IActionResult> ValidatePhoneNumber(string userId, string code);
+    public Task<IActionResult> GetPasswordCodeAsync(ForgotPasswordSchema schema);
+
+    public Task<IActionResult> ValidatePasswordCode(string code);
+
+    public Task<IActionResult> ChangePasswordAsync(ChangePasswordSchema schema);
 }

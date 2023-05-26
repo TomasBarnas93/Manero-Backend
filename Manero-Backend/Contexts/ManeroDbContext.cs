@@ -46,6 +46,11 @@ namespace Manero_Backend.Contexts
 				.WithOne(wl => wl.AppUser)
 				.HasForeignKey(wl => wl.AppUserId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+				appUser.HasMany(au => au.UserCodes)
+				.WithOne(uc => uc.AppUser)
+				.HasForeignKey(uc => uc.UserId)
+				.OnDelete(DeleteBehavior.NoAction);
 			});
 
 			modelBuilder.Entity<PromoCodeEntity>(promoCode =>
@@ -246,5 +251,6 @@ namespace Manero_Backend.Contexts
 
 		public DbSet<ProductColorEntity> ProductColors { get; set; }
 		public DbSet<ProductSizeEntity> ProductSizes { get; set; }
+		public DbSet<UserCodeEntity> UserCodes { get; set; }
 	}
 }

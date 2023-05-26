@@ -20,6 +20,8 @@ public class AppUser : IdentityUser
     public ICollection<ReviewEntity> Reviews { get; set; } //M:M
     public ICollection<WishEntity> WishList { get; set; } //M:M
 
+    public ICollection<UserCodeEntity> UserCodes { get; set; }//M:1
+
     public static implicit operator UserProfileDto(AppUser user)
     {
         return new UserProfileDto

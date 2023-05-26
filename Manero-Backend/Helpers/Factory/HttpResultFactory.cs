@@ -70,5 +70,9 @@ namespace Manero_Backend.Helpers.Factory
         }
         
         public static ForbidResult Forbid() => new();
+
+        public static RedirectResult Redirect(string url) => new(url);
+
+      
     }
 }

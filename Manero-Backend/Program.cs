@@ -43,7 +43,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderProductsRepository,  OrderProductsRepository>();
 builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
 builder.Services.AddScoped<IOrderStatusTypeRepository, OrderStatusTypeRepository>();
-
+builder.Services.AddScoped<IUserCodeRepository, UserCodeRepository>();
 
 //Services
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -68,6 +68,8 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderProductsService, OrderProductsService>();
 builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 builder.Services.AddScoped<IOrderStatusTypeService, OrderStatusTypeService>();
+builder.Services.AddScoped<IUserCodeService,  UserCodeService>();
+builder.Services.AddTransient<IEMailService, MailService>();
 
 //Identity and Authorization
 builder.Services.AddIdentity<AppUser, IdentityRole>(x =>
