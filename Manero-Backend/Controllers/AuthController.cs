@@ -100,6 +100,14 @@ namespace Manero_Backend.Controllers
 
         }
 
+        [HttpGet("validatetoken")]
+        [Authorize]
+        public async Task<IActionResult> ValidateToken()
+        {
+            return NoContent();
+        }
+
+
 
 
         [Obsolete("Not ready yet")]
